@@ -1,0 +1,3 @@
+[submodule "weblua"]
+	path = weblua
+	url = https://github.com/zaynyatyi/weblua

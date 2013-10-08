@@ -1,0 +1,21 @@
+<html>
+<head>
+<script type="text/javascript" src="weblua/build/weblia-0.1.5.js"></script>
+</head>
+<body><h2>Instead ported by lua.js test</h2>
+<script type="text/javascript">
+
+  // this is equivalent to: init(1, 2, 3)
+  //lua_call(lua_tableget(lua_script, "init"), [1, 2, 3]);
+  var assert = require("assert")
+  //lua_tablegetcall(lua_script, 'prn', ['f']);
+
+  // this is equivalent to: local numActive = activeChars.count
+  //var numActive = lua_tableget(lua_tableget(lua_script, "activeChars"), "count")[0];
+
+  // this is equivalent to: local distFromCenter = get_distance({x=1, y=2})
+  //var distFromCenter = lua_call(lua_tableget(lua_script, "get_distance"), [lua_newtable(null, "x", 1, "y", 2)])[0];
+
+</script>
+</body>
+</html>
