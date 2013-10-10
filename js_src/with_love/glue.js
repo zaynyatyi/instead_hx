@@ -18,7 +18,7 @@ function Glue_init()
 }
 
 /// synchronous ajax to get file, so code executed before function returns
-function RunLuaFromPath (path, safe) {
+function RunLuaFromPath (path) {
 	//if (gLoveExecutionHalted) return;
 	//~ MainPrint("RunLuaFromPath "+path);
 	try {

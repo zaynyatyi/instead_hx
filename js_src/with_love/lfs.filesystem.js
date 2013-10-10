@@ -15,13 +15,13 @@ function LfsNormalizePath (path) {
 /// newline separated file paths, e.g. linux commandline "find . > filelist.txt"
 function LfsFileList (url) {
 	MainPrint("LoveFileList",url);
-	MyProfileStart("LoveFileList:download:"+url);
+	//MyProfileStart("LoveFileList:download:"+url);
 	UtilAjaxGet(url, function (contents) {
 		if (contents) {
 			gFilesystemEnumerateList = {};
-			MyProfileStart("LoveFileList:split:"+url);
+			//MyProfileStart("LoveFileList:split:"+url);
 			var paths = contents.split("\n");
-			MyProfileStart("LoveFileList:analyze:"+url);
+			//MyProfileStart("LoveFileList:analyze:"+url);
 			for (var i in paths) {
 				var path = LfsNormalizePath(paths[i]);
 				if (path == "" || path == "." || path == "..") continue;
@@ -35,7 +35,7 @@ function LfsFileList (url) {
 				gFilesystemEnumerateIsDirectory[parentpath] = true;
 				gFilesystemEnumerateIsFile[parentpath] = false;
 			}
-			MyProfileEnd();
+			//MyProfileEnd();
 		}
 	}, true);
 }
@@ -43,7 +43,7 @@ function LfsFileList (url) {
 // Returns a table with the names of files and subdirectories in the directory in an undefined order. 
 // example: "dira" contains 1 file (a.txt) and 2 subdirs (diraa,dirab) :   lfs.filesystem.enumerate("dira") (="dira/") = {"a.txt","diraa","dirab"}
 function LfsEnumerate (path) {
-	if (!gFilesystemEnumerateList) return NotImplemented(pre+'enumerate (try index.html body onload : LfsFileList("filelist.txt") from "find . > filelist.txt")');
+	if (!gFilesystemEnumerateList) return NotImplemented('enumerate (try index.html body onload : LfsFileList("filelist.txt") from "find . > filelist.txt")');
 	var res = {};
 	if (path.substring(path.length - 1) == "/") path = path.substring(0,path.length - 1); // remove trailing /
 	path = LfsNormalizePath(path);
@@ -156,5 +156,5 @@ function Love_Filesystem_CreateTable () {
 		}
 	}
 
-    Lua.inject(t, null, 'love.filesystem');
+    Lua.inject(t, null, 'lfs_filesystem');
 }

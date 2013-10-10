@@ -1,0 +1,4 @@
+./gamesource/main.lua
+./gamesource/test.lua
+./gamesource/stead
+./gamesource/stead/stead.lua

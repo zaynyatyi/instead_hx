@@ -1,13 +1,23 @@
 <html>
 <head>
-<script type="text/javascript" src="weblua/build/weblia-0.1.5.js"></script>
+<script type="text/javascript" src="weblua/build/weblua-0.1.5.js"></script>
+<script type="text/javascript" src="with_love/glue.js"></script>
+<script type="text/javascript" src="with_love/utils.js"></script>
+<script type="text/javascript" src="with_love/lfs.filesystem.js"></script>
+<script type="text/javascript" src="main.js"></script>
 </head>
 <body><h2>Instead ported by lua.js test</h2>
 <script type="text/javascript">
-
+	MainPrint("Test page","test message");
+	Love_Filesystem_CreateTable();
+	LfsFileList("filelist.txt");
+	Lua.exec("print(2+3)");
+	
+	RunLuaFromPath ("./gamesource/stead/stead.lua");
+	RunLuaFromPath ("./gamesource/test.lua");
   // this is equivalent to: init(1, 2, 3)
   //lua_call(lua_tableget(lua_script, "init"), [1, 2, 3]);
-  var assert = require("assert")
+  //var assert = require("assert")
   //lua_tablegetcall(lua_script, 'prn', ['f']);
 
   // this is equivalent to: local numActive = activeChars.count
