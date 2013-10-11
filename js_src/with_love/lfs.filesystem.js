@@ -11,10 +11,10 @@ function LfsNormalizePath (path) {
 	return path;
 }
 
-/// call LfsFileList('filelist.txt') in index.html body onload to enable love.filesystem.enumerate
+/// call LfsFileList('filelist.txt') in index.html body onload to enable lfs_filesystem.enumerate
 /// newline separated file paths, e.g. linux commandline "find . > filelist.txt"
 function LfsFileList (url) {
-	MainPrint("LoveFileList",url);
+	MainPrint("LfsFileList",url);
 	//MyProfileStart("LoveFileList:download:"+url);
 	UtilAjaxGet(url, function (contents) {
 		if (contents) {
@@ -92,11 +92,11 @@ function Lfs_exists (path) {
 }
 
 /// init lua api
-function Love_Filesystem_CreateTable () {
+function Lfs_CreateTable () {
 	var t = {};
-	var pre = "love.filesystem.";
+	var pre = "lfs_filesystem.";
 
-	t['enumerate']				= function (path) { return LoveFilesystemEnumerate(path); }
+	t['enumerate']				= function (path) { return LfsEnumerate(path); }
 	
 	t['exists']					= function (path) { return [Lfs_exists(path)]; }
 	t['isDirectory']			= function (path) { return [Lfs_isDir(path)]; }
