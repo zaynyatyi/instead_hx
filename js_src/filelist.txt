@@ -1,4 +1,14 @@
 ./gamesource/main.lua
 ./gamesource/test.lua
-./gamesource/stead
-./gamesource/stead/stead.lua
+./stead.lua
+./web.lua
+./dash.lua
+./dlg.lua
+./format.lua
+./gui.lua
+./object.lua
+./para.lua
+./vars.lua
+./walk.lua
+./wroom.lua
+./xact.lua

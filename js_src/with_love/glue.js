@@ -5,10 +5,7 @@ function Glue_init()
 		if (path.substr(-4) == ".lua") path = path.slice(0, -4); // require automatically appends .lua to the filepath later, remove it here
 		path = path.replace(/\./g, "/");
 
-		var initpath = path+"/init.lua"; // require("shaders") -> shaders/init.lua 
-		if (Lfs_exists(initpath)) 
-				return RunLuaFromPath(initpath);
-		else	return RunLuaFromPath(path + ".lua"); // require("bla") -> bla.lua
+		return RunLuaFromPath(path + ".lua"); // require("bla") -> bla.lua
 
 		//~ NOTE: replaces parser lib lua_require(G, path);
 	}, 'require');

@@ -8,11 +8,11 @@
 </head>
 <body><h2>Instead ported by lua.js test</h2>
 <script type="text/javascript">
-	RunLuaFromPath("./gamesource/web.lua")
-	RunLuaFromPath("./gamesource/stead/stead.lua")
+	RunLuaFromPath("web.lua")
+	RunLuaFromPath("stead.lua")
+	RunLuaFromPath("gui.lua")
 	RunLuaFromPath("./gamesource/main.lua")
 	
-	Lua.exec("print(table_get_maxn({10,500,30,nil,-6,[400]=true}))");
 	Lua.exec("game.ini(game)");
 	MainPrint(Lua.eval("iface.cmd(iface, \"look\")"));
 </script>
