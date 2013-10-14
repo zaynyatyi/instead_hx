@@ -29,7 +29,7 @@ function RunLuaFromPath (path) {
 
 		// construct temporary function name containing filepath for more useful error messages
 		// var temp_function_name = "luatmp_"+path.replace(/[^a-zA-Z0-9]/g,"_");
-
+		luacode = Utf8.encode(luacode);
         Lua.cache.items = {}; // Clear cache;
 		var res = Lua.exec(luacode, path);
 		return res;
@@ -38,4 +38,28 @@ function RunLuaFromPath (path) {
 		//if (!safe)
 		MainPrint("error during "+path+" : "+String(e)+" :\n"+PrepareExceptionStacktraceForOutput(e)); 
 	}
+}
+
+// convert non latin symbols
+var Utf8 = {
+ 
+	// public method for url encoding
+	encode : function (string) {
+		string = string.replace(/\r\n/g,"\n");
+		var utftext = "";
+ 
+		for (var n = 0; n < string.length; n++) {
+ 
+			var c = string.charCodeAt(n);
+ 
+			if (c < 128) {
+				utftext += String.fromCharCode(c);
+			} else if(c > 127) {
+				utftext += '&#i';
+				utftext += c;
+				utftext += ';';
+			}
+		}
+		return utftext;
+	},
 }

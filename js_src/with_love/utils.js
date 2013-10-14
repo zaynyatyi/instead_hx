@@ -69,3 +69,11 @@ function UtilAjaxGet (sQuery,callback,bSynchronous) {
 	//~ client.setRequestHeader("Content-Type", "text/plain;charset=UTF-8");
 	client.send();
 }
+
+function encode_utf8( s ) {
+	return unescape( encodeURIComponent( s ) );
+}
+
+function decode_utf8( s ) {
+	return decodeURIComponent( escape( s ) );
+}
