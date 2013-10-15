@@ -42,7 +42,6 @@ function RunLuaFromPath (path) {
 
 // convert non latin symbols
 var Utf8 = {
- 
 	// public method for url encoding
 	encode : function (string) {
 		string = string.replace(/\r\n/g,"\n");

@@ -5,3 +5,13 @@ Lua.initialize();
 Glue_init();
 
 // Custom injects
+
+// Instead object
+function Interpreter() {
+}
+Interpreter.prototype.call = function(command) {
+    return Lua.eval(command);
+}
+Interpreter.prototype.load = function(path) {
+    RunLuaFromPath(path);
+}

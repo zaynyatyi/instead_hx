@@ -1,3 +1,3 @@
 [submodule "weblua"]
-	path = weblua
+	path = js_src/weblua
 	url = https://github.com/zaynyatyi/weblua
