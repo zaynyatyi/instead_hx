@@ -1,7 +1,9 @@
 -- $Name:Backup$
 -- $Name(ru):Резервная копия$
--- $Version:0.3.1$
+-- $Version:0.4$
 instead_version '1.7.1'
+
+require 'para'
 
 main = room
 {
@@ -18,13 +20,13 @@ main = room
     {
         obj
         {
-            nam = 'en'; dsc = '> {English}^';
-            act = code [[ gamefile('main_eng.lua', true); ]];
+            nam = 'en'; dsc = '> {English} (1 chapter from 4)^';
+            act = code [[ gamefile ('en_main.lua', true); ]];
         };
         obj
         {
             nam = 'ru'; dsc = '> {Русский}';
-            act = code [[ gamefile('main_rus.lua', true); ]];
+            act = code [[ gamefile ('ru_main.lua', true); ]];
         };
     }
 };

@@ -10,7 +10,7 @@ function Glue_init()
 		//~ NOTE: replaces parser lib lua_require(G, path);
 	}, 'require');
 	Lua.inject(function (path) {
-		return RunLuaFromPath(path);
+		return RunLuaFromPath(stead.SteadDispatcher.get_dofile() + path);
 	}, 'dofile');
 }
 
@@ -54,7 +54,7 @@ var Utf8 = {
 			if (c < 128) {
 				utftext += String.fromCharCode(c);
 			} else if(c > 127) {
-				utftext += '&#i';
+				utftext += '&#';
 				utftext += c;
 				utftext += ';';
 			}
