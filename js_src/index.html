@@ -7,12 +7,27 @@
 <script type="text/javascript" src="with_love/utils.js"></script>
 <script type="text/javascript" src="with_love/lfs.filesystem.js"></script>
 <script type="text/javascript" src="main.js"></script>
+<style type="text/css">
+div {border:1px solid black;}
+#text {width:800px;}
+.wordwrap { 
+	word-wrap: normal
+	white-space: pre-line;      /* CSS3 */   
+}
+pre {
+	white-space: pre-line;
+}
+.nowrap {
+	white-space: nowrap;
+	word-spacing: 10px;
+}
+</style>
 </head>
 <body><h2>Instead ported by lua.js test</h2>
 <div id="title"></div>
 <div id="picture"></div>
 <div id="ways"></div>
-<div id="text"></div>
+<div class="wordwrap" id="text"></div>
 <div id="inventory"></div>
 <script type="text/javascript" src="instead_hx.js"></script>
 </body>

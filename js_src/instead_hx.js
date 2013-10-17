@@ -120,25 +120,55 @@ stead.SteadDispatcher = function() {
 };
 stead.SteadDispatcher.__name__ = true;
 stead.SteadDispatcher.look = function() {
-	stead.SteadDispatcher.setContent("text",Std.string(stead.SteadDispatcher.interpreter.call("iface.cmd(iface, \"look\")")[0]));
+	stead.SteadDispatcher.ifaceCmd("\"look\"");
+	stead.SteadDispatcher.refreshInterface();
+}
+stead.SteadDispatcher.refreshInterface = function() {
+	stead.SteadDispatcher.getTitle();
+	stead.SteadDispatcher.getWays();
+	stead.SteadDispatcher.getInv();
 }
 stead.SteadDispatcher.click = function(ref) {
-	stead.SteadDispatcher.interpreter.call("iface.cmd(iface, \"" + HxOverrides.substr(ref,1,null) + "\")");
-	stead.SteadDispatcher.look();
+	ref = HxOverrides.substr(ref,1,null);
+	if(HxOverrides.substr(ref,0,3) == "act") ref = "use " + HxOverrides.substr(ref,4,null);
+	stead.SteadDispatcher.ifaceCmd("\"" + ref + "\"");
+	stead.SteadDispatcher.refreshInterface();
 }
 $hxExpose(stead.SteadDispatcher.click, "stead.SteadDispatcher.click");
 stead.SteadDispatcher.get_dofile = function() {
 	return stead.SteadDispatcher._dofile_path;
 }
 $hxExpose(stead.SteadDispatcher.get_dofile, "stead.SteadDispatcher.get_dofile");
+stead.SteadDispatcher.getInv = function() {
+	var invAnswer = Std.string(stead.SteadDispatcher.interpreter.call("instead.get_inv(true)")[0]);
+	stead.SteadDispatcher.setContent("inventory",invAnswer);
+}
+stead.SteadDispatcher.getWays = function() {
+	var waysAnswer = Std.string(stead.SteadDispatcher.interpreter.call("instead.get_ways()")[0]);
+	stead.SteadDispatcher.setContent("ways",waysAnswer);
+}
+stead.SteadDispatcher.getTitle = function() {
+	var waysAnswer = Std.string(stead.SteadDispatcher.interpreter.call("instead.get_title()")[0]);
+	stead.SteadDispatcher.setContent("title","<a href=\"javascript:stead.SteadDispatcher.click('#look')\">" + waysAnswer + "</a>");
+}
+stead.SteadDispatcher.ifaceCmd = function(command) {
+	var retVal = stead.SteadDispatcher.interpreter.call("iface.cmd(iface, " + command + ")");
+	var cmdAnswer = Std.string(retVal[0]);
+	var rc = retVal[1];
+	if(cmdAnswer != "" && rc) stead.SteadDispatcher.setContent("text",cmdAnswer);
+}
 stead.SteadDispatcher.setContent = function(id,content) {
 	var d = js.Browser.document.getElementById(id);
 	if(d == null) js.Lib.alert("Unknown element : " + id);
-	d.innerHTML = "<pre>" + stead.SteadDispatcher.normalizeLinks(content) + "</pre>";
+	d.innerHTML = "<pre>" + stead.SteadDispatcher.normalizeContent(content) + "</pre>";
 }
-stead.SteadDispatcher.normalizeLinks = function(input) {
-	var r = new EReg("<a(:)(\\d+)","g");
-	return r.replace(input,"<a href=\"javascript:stead.SteadDispatcher.click('#$2')\"");
+stead.SteadDispatcher.normalizeContent = function(input) {
+	var output = "";
+	var r = new EReg("<a(:)([\\w+\\d+ ]+)","g");
+	output = r.replace(input,"<a href=\"javascript:stead.SteadDispatcher.click('#$2')\"");
+	r = new EReg("<w:([^>]+)>","g");
+	output = r.replace(output,"<span class=\"nowrap\">$1</span>");
+	return output;
 }
 String.__name__ = true;
 Array.__name__ = true;
