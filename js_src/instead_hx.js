@@ -1,4 +1,5 @@
 (function () { "use strict";
+var $estr = function() { return js.Boot.__string_rec(this,''); };
 var EReg = function(r,opt) {
 	opt = opt.split("u").join("");
 	this.r = new RegExp(r,opt);
@@ -109,6 +110,19 @@ js.Lib.alert = function(v) {
 	alert(js.Boot.__string_rec(v,""));
 }
 var stead = {}
+stead.EField = { __ename__ : true, __constructs__ : ["Text","Ways","Title","Inv"] }
+stead.EField.Text = ["Text",0];
+stead.EField.Text.toString = $estr;
+stead.EField.Text.__enum__ = stead.EField;
+stead.EField.Ways = ["Ways",1];
+stead.EField.Ways.toString = $estr;
+stead.EField.Ways.__enum__ = stead.EField;
+stead.EField.Title = ["Title",2];
+stead.EField.Title.toString = $estr;
+stead.EField.Title.__enum__ = stead.EField;
+stead.EField.Inv = ["Inv",3];
+stead.EField.Inv.toString = $estr;
+stead.EField.Inv.__enum__ = stead.EField;
 stead.SteadDispatcher = function() {
 	stead.SteadDispatcher.interpreter.load("web.lua");
 	stead.SteadDispatcher.interpreter.load("stead.lua");
@@ -128,11 +142,30 @@ stead.SteadDispatcher.refreshInterface = function() {
 	stead.SteadDispatcher.getWays();
 	stead.SteadDispatcher.getInv();
 }
-stead.SteadDispatcher.click = function(ref) {
-	ref = HxOverrides.substr(ref,1,null);
-	if(HxOverrides.substr(ref,0,3) == "act") ref = "use " + HxOverrides.substr(ref,4,null);
-	stead.SteadDispatcher.ifaceCmd("\"" + ref + "\"");
-	stead.SteadDispatcher.refreshInterface();
+stead.SteadDispatcher.click = function(ref,field) {
+	if(stead.SteadDispatcher.act || field == stead.EField.Inv[1]) {
+		ref = HxOverrides.substr(ref,1,null);
+		if(HxOverrides.substr(ref,0,3) == "act") {
+			ref = "use " + HxOverrides.substr(ref,4,null);
+			stead.SteadDispatcher.ifaceCmd("\"" + ref + "\"");
+			stead.SteadDispatcher.refreshInterface();
+			return;
+		}
+		if(stead.SteadDispatcher.act) {
+			if(field != stead.EField.Ways[1] && field != stead.EField.Title[1]) {
+				if(ref == stead.SteadDispatcher.thing) stead.SteadDispatcher.ifaceCmd("\"use " + ref + "\""); else stead.SteadDispatcher.ifaceCmd("\"use " + ref + "," + stead.SteadDispatcher.thing + "\"");
+				stead.SteadDispatcher.act = false;
+				stead.SteadDispatcher.thing = "";
+				stead.SteadDispatcher.refreshInterface();
+			}
+		} else {
+			stead.SteadDispatcher.act = true;
+			stead.SteadDispatcher.thing = ref;
+		}
+	} else {
+		stead.SteadDispatcher.ifaceCmd("\"" + ref + "\"");
+		stead.SteadDispatcher.refreshInterface();
+	}
 }
 $hxExpose(stead.SteadDispatcher.click, "stead.SteadDispatcher.click");
 stead.SteadDispatcher.get_dofile = function() {
@@ -141,31 +174,31 @@ stead.SteadDispatcher.get_dofile = function() {
 $hxExpose(stead.SteadDispatcher.get_dofile, "stead.SteadDispatcher.get_dofile");
 stead.SteadDispatcher.getInv = function() {
 	var invAnswer = Std.string(stead.SteadDispatcher.interpreter.call("instead.get_inv(true)")[0]);
-	stead.SteadDispatcher.setContent("inventory",invAnswer);
+	stead.SteadDispatcher.setContent("inventory",invAnswer,stead.EField.Inv);
 }
 stead.SteadDispatcher.getWays = function() {
 	var waysAnswer = Std.string(stead.SteadDispatcher.interpreter.call("instead.get_ways()")[0]);
-	stead.SteadDispatcher.setContent("ways",waysAnswer);
+	stead.SteadDispatcher.setContent("ways",waysAnswer,stead.EField.Ways);
 }
 stead.SteadDispatcher.getTitle = function() {
 	var waysAnswer = Std.string(stead.SteadDispatcher.interpreter.call("instead.get_title()")[0]);
-	stead.SteadDispatcher.setContent("title","<a href=\"javascript:stead.SteadDispatcher.click('#look')\">" + waysAnswer + "</a>");
+	stead.SteadDispatcher.setContent("title","<a href=\"javascript:stead.SteadDispatcher.click('#look', " + stead.EField.Title[1] + ")\">" + waysAnswer + "</a>",stead.EField.Title);
 }
 stead.SteadDispatcher.ifaceCmd = function(command) {
 	var retVal = stead.SteadDispatcher.interpreter.call("iface.cmd(iface, " + command + ")");
 	var cmdAnswer = Std.string(retVal[0]);
 	var rc = retVal[1];
-	if(cmdAnswer != "" && rc) stead.SteadDispatcher.setContent("text",cmdAnswer);
+	if(cmdAnswer != "" && rc) stead.SteadDispatcher.setContent("text",cmdAnswer,stead.EField.Text);
 }
-stead.SteadDispatcher.setContent = function(id,content) {
+stead.SteadDispatcher.setContent = function(id,content,field) {
 	var d = js.Browser.document.getElementById(id);
 	if(d == null) js.Lib.alert("Unknown element : " + id);
-	d.innerHTML = "<pre>" + stead.SteadDispatcher.normalizeContent(content) + "</pre>";
+	d.innerHTML = "<pre>" + stead.SteadDispatcher.normalizeContent(content,field) + "</pre>";
 }
-stead.SteadDispatcher.normalizeContent = function(input) {
+stead.SteadDispatcher.normalizeContent = function(input,field) {
 	var output = "";
 	var r = new EReg("<a(:)([\\w+\\d+ ]+)","g");
-	output = r.replace(input,"<a href=\"javascript:stead.SteadDispatcher.click('#$2')\"");
+	output = r.replace(input,"<a href=\"javascript:stead.SteadDispatcher.click('#$2', " + field[1] + ")\"");
 	r = new EReg("<w:([^>]+)>","g");
 	output = r.replace(output,"<span class=\"nowrap\">$1</span>");
 	return output;
@@ -177,6 +210,8 @@ js.JQuery = q;
 js.Browser.document = typeof window != "undefined" ? window.document : null;
 stead.SteadDispatcher._dofile_path = "";
 stead.SteadDispatcher.interpreter = new Interpreter();
+stead.SteadDispatcher.act = false;
+stead.SteadDispatcher.thing = "";
 Main.main();
 function $hxExpose(src, path) {
 	var o = typeof window != "undefined" ? window : exports;
