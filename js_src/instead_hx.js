@@ -153,7 +153,7 @@ stead.SteadDispatcher.click = function(ref,field) {
 		}
 		if(stead.SteadDispatcher.act) {
 			if(field != stead.EField.Ways[1] && field != stead.EField.Title[1]) {
-				if(ref == stead.SteadDispatcher.thing) stead.SteadDispatcher.ifaceCmd("\"use " + ref + "\""); else stead.SteadDispatcher.ifaceCmd("\"use " + ref + "," + stead.SteadDispatcher.thing + "\"");
+				if(ref == stead.SteadDispatcher.thing) stead.SteadDispatcher.ifaceCmd("\"use " + ref + "\""); else stead.SteadDispatcher.ifaceCmd("\"use " + stead.SteadDispatcher.thing + "," + ref + "\"");
 				stead.SteadDispatcher.act = false;
 				stead.SteadDispatcher.thing = "";
 				stead.SteadDispatcher.refreshInterface();

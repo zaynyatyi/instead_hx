@@ -70,7 +70,7 @@ class SteadDispatcher
 					{
 						ifaceCmd("\"use " + ref + "\"");
 					}else {
-						ifaceCmd("\"use " + ref + ',' + thing + "\"");
+						ifaceCmd("\"use " + thing + ',' + ref + "\"");
 					}
 					act = false;
 					thing = "";
