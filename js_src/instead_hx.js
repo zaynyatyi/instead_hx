@@ -214,7 +214,7 @@ stead.SteadDispatcher.showPicture = function(path) {
 	image.src = stead.SteadDispatcher._dofile_path + path;
 }
 stead.SteadDispatcher.copyAccross = function(e) {
-	var image = e.srcElement;
+	var image = e.currentTarget;
 	stead.SteadDispatcher.canvas.getContext("2d").clearRect(0,0,stead.SteadDispatcher.canvas.width,stead.SteadDispatcher.canvas.height);
 	stead.SteadDispatcher.canvas.width = image.width;
 	stead.SteadDispatcher.canvas.height = image.height;

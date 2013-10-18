@@ -158,7 +158,7 @@ class SteadDispatcher
 	private static function copyAccross(e:Event)
 	{
 		//TODO: add multi pics support
-		var image:Image = cast e.srcElement;
+		var image:Image = cast e.currentTarget;
 		canvas.getContext2d().clearRect(0, 0, canvas.width, canvas.height);
 		canvas.width = image.width;
 		canvas.height = image.height;
