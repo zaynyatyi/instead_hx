@@ -1,6 +1,9 @@
 package stead;
 
 import js.Browser;
+import js.html.CanvasElement;
+import js.html.Event;
+import js.html.Image;
 import js.JQuery;
 import js.Lib;
 
@@ -22,6 +25,7 @@ class SteadDispatcher
 	private static var interpreter:Interpreter = new Interpreter();
 	private static var act:Bool = false;
 	private static var thing:String = "";
+	private static var canvas:CanvasElement;
 	
 	public function new() 
 	{
@@ -30,8 +34,9 @@ class SteadDispatcher
         interpreter.load("gui.lua");
         _dofile_path = "./gamesource/";
         interpreter.load(_dofile_path + "main.lua");
-
         interpreter.call("game.ini(game)");
+		
+		canvas = cast Browser.document.getElementById("canvas");
 		
 		look();
 	}
@@ -47,6 +52,8 @@ class SteadDispatcher
 		getTitle();
 		getWays();
 		getInv();
+		getPicture();
+		getMusic();
 	}
 	
 	@:expose public static function click(ref:String, field:Int):Void
@@ -80,8 +87,6 @@ class SteadDispatcher
 				act = true;
 				thing = ref;
 			}
-			//ifaceCmd("\"" + ref + "\"");
-			//refreshInterface();
 		}else {
 			ifaceCmd("\"" + ref + "\"");
 			refreshInterface();
@@ -95,8 +100,12 @@ class SteadDispatcher
 	
 	private static function getInv()
 	{
-		var invAnswer:String = Std.string(interpreter.call("instead.get_inv(true)")[0]);
-		setContent("inventory", invAnswer, Inv);
+		var retVal:Array<Dynamic> = interpreter.call("instead.get_inv(true)");
+		if (retVal[0] != null)
+		{
+			var invAnswer:String = Std.string(retVal[0]);
+			setContent("inventory", invAnswer, Inv);
+		}
 	}
 	
 	private static function getWays()
@@ -111,18 +120,71 @@ class SteadDispatcher
 		setContent("title", "<a href=\"javascript:stead.SteadDispatcher.click(\'#look\', " + Title.getIndex() + ")\">" + waysAnswer + "</a>", Title);
 	}
 	
-	private static function ifaceCmd(command:String)
+	private static function getPicture()
 	{
-		var retVal:Array<Dynamic> = interpreter.call("iface.cmd(iface, " + command + ")");
-		var cmdAnswer:String = Std.string(retVal[0]);
-		var rc:Bool = retVal[1];
-		if (cmdAnswer != "" && rc)
+		var retVal:Array<Dynamic> = interpreter.call("instead.get_picture()");
+		if (retVal[0] != null)
 		{
-			setContent("text", cmdAnswer, Text);
+			var picture_path:String = Std.string(retVal[0]);
+			showPicture(picture_path);
 		}
 	}
 	
-    private static function setContent(id:String, content:String, field:EField) 
+	private static function getMusic()
+	{
+		var retVal:Array<Dynamic> = interpreter.call("instead.get_music()");
+		if (retVal[0] != null)
+		{
+			var music_path:String = Std.string(retVal[0]);
+			playMusic(music_path);
+		}
+	}
+	
+	private static function showPicture(path:String)
+	{
+		trace(path);
+		//TODO: parse here how many images we have and positions
+        var image = new Image();
+        image.style.left = '0px';
+        image.style.top = '0px';
+        
+        // add call back for when image is loaded.
+        image.onload = copyAccross;        
+
+        image.style.position = "absolute";
+        image.src = _dofile_path + path;
+	}
+	
+	private static function copyAccross(e:Event)
+	{
+		//TODO: add multi pics support
+		var image:Image = cast e.srcElement;
+		canvas.getContext2d().clearRect(0, 0, canvas.width, canvas.height);
+		canvas.width = image.width;
+		canvas.height = image.height;
+		canvas.getContext2d().drawImage(image, 0, 0, image.width, image.height);
+	}
+	
+	private static function playMusic(path:String)
+	{
+		trace(path);
+	}
+	
+	private static function ifaceCmd(command:String)
+	{
+		var retVal:Array<Dynamic> = interpreter.call("iface.cmd(iface, " + command + ")");
+		if (retVal[0] != null)
+		{
+			var cmdAnswer:String = Std.string(retVal[0]);
+			var rc:Bool = retVal[1];
+			if (cmdAnswer != "" && rc)
+			{
+				setContent("text", cmdAnswer, Text);
+			}
+		}
+	}
+	
+    private static function setContent(id:String, content:String, field:EField)
 	{
         var d = Browser.document.getElementById(id);
         if( d == null )

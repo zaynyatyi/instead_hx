@@ -130,6 +130,7 @@ stead.SteadDispatcher = function() {
 	stead.SteadDispatcher._dofile_path = "./gamesource/";
 	stead.SteadDispatcher.interpreter.load(stead.SteadDispatcher._dofile_path + "main.lua");
 	stead.SteadDispatcher.interpreter.call("game.ini(game)");
+	stead.SteadDispatcher.canvas = js.Browser.document.getElementById("canvas");
 	stead.SteadDispatcher.look();
 };
 stead.SteadDispatcher.__name__ = true;
@@ -141,6 +142,8 @@ stead.SteadDispatcher.refreshInterface = function() {
 	stead.SteadDispatcher.getTitle();
 	stead.SteadDispatcher.getWays();
 	stead.SteadDispatcher.getInv();
+	stead.SteadDispatcher.getPicture();
+	stead.SteadDispatcher.getMusic();
 }
 stead.SteadDispatcher.click = function(ref,field) {
 	if(stead.SteadDispatcher.act || field == stead.EField.Inv[1]) {
@@ -173,8 +176,11 @@ stead.SteadDispatcher.get_dofile = function() {
 }
 $hxExpose(stead.SteadDispatcher.get_dofile, "stead.SteadDispatcher.get_dofile");
 stead.SteadDispatcher.getInv = function() {
-	var invAnswer = Std.string(stead.SteadDispatcher.interpreter.call("instead.get_inv(true)")[0]);
-	stead.SteadDispatcher.setContent("inventory",invAnswer,stead.EField.Inv);
+	var retVal = stead.SteadDispatcher.interpreter.call("instead.get_inv(true)");
+	if(retVal[0] != null) {
+		var invAnswer = Std.string(retVal[0]);
+		stead.SteadDispatcher.setContent("inventory",invAnswer,stead.EField.Inv);
+	}
 }
 stead.SteadDispatcher.getWays = function() {
 	var waysAnswer = Std.string(stead.SteadDispatcher.interpreter.call("instead.get_ways()")[0]);
@@ -184,11 +190,46 @@ stead.SteadDispatcher.getTitle = function() {
 	var waysAnswer = Std.string(stead.SteadDispatcher.interpreter.call("instead.get_title()")[0]);
 	stead.SteadDispatcher.setContent("title","<a href=\"javascript:stead.SteadDispatcher.click('#look', " + stead.EField.Title[1] + ")\">" + waysAnswer + "</a>",stead.EField.Title);
 }
+stead.SteadDispatcher.getPicture = function() {
+	var retVal = stead.SteadDispatcher.interpreter.call("instead.get_picture()");
+	if(retVal[0] != null) {
+		var picture_path = Std.string(retVal[0]);
+		stead.SteadDispatcher.showPicture(picture_path);
+	}
+}
+stead.SteadDispatcher.getMusic = function() {
+	var retVal = stead.SteadDispatcher.interpreter.call("instead.get_music()");
+	if(retVal[0] != null) {
+		var music_path = Std.string(retVal[0]);
+		stead.SteadDispatcher.playMusic(music_path);
+	}
+}
+stead.SteadDispatcher.showPicture = function(path) {
+	console.log(path);
+	var image = new Image();
+	image.style.left = "0px";
+	image.style.top = "0px";
+	image.onload = stead.SteadDispatcher.copyAccross;
+	image.style.position = "absolute";
+	image.src = stead.SteadDispatcher._dofile_path + path;
+}
+stead.SteadDispatcher.copyAccross = function(e) {
+	var image = e.srcElement;
+	stead.SteadDispatcher.canvas.getContext("2d").clearRect(0,0,stead.SteadDispatcher.canvas.width,stead.SteadDispatcher.canvas.height);
+	stead.SteadDispatcher.canvas.width = image.width;
+	stead.SteadDispatcher.canvas.height = image.height;
+	stead.SteadDispatcher.canvas.getContext("2d").drawImage(image,0,0,image.width,image.height);
+}
+stead.SteadDispatcher.playMusic = function(path) {
+	console.log(path);
+}
 stead.SteadDispatcher.ifaceCmd = function(command) {
 	var retVal = stead.SteadDispatcher.interpreter.call("iface.cmd(iface, " + command + ")");
-	var cmdAnswer = Std.string(retVal[0]);
-	var rc = retVal[1];
-	if(cmdAnswer != "" && rc) stead.SteadDispatcher.setContent("text",cmdAnswer,stead.EField.Text);
+	if(retVal[0] != null) {
+		var cmdAnswer = Std.string(retVal[0]);
+		var rc = retVal[1];
+		if(cmdAnswer != "" && rc) stead.SteadDispatcher.setContent("text",cmdAnswer,stead.EField.Text);
+	}
 }
 stead.SteadDispatcher.setContent = function(id,content,field) {
 	var d = js.Browser.document.getElementById(id);
