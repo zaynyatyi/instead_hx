@@ -8,8 +8,6 @@
 <script type="text/javascript" src="with_love/lfs.filesystem.js"></script>
 <script type="text/javascript" src="main.js"></script>
 <style type="text/css">
-div {border:1px solid black;}
-#text {width:800px;}
 .wordwrap { 
     word-wrap: normal
     white-space: pre-line;      /* CSS3 */
@@ -21,15 +19,23 @@ pre {
     white-space: nowrap;
     word-spacing: 10px;
 }
+#stead, #win, #inventory {
+	position: absolute;
+}
+#win, #inventory {
+	overflow: auto;
+}
 </style>
 </head>
-<body><h2>Instead ported by lua.js test</h2>
+<body>
 <div id="stead">
-    <div id="title"></div>
-    <div id="picture"></div>
-    <canvas id="canvas"></canvas>
-    <div id="ways"></div>
-    <div class="wordwrap" id="text"></div>
+	<div id="win">
+		<div id="title"></div>
+		<div id="picture"></div>
+		<canvas id="canvas"></canvas>
+		<div id="ways"></div>
+		<div class="wordwrap" id="text"></div>
+	</div>
     <div id="inventory"></div>
 </div>
 <script type="text/javascript" src="instead_hx.js"></script>

@@ -12,18 +12,37 @@ class Main {
 
     public function new () {
         stead_dispatcher = new SteadDispatcher();
-        theme_parser = new ThemeParser();
-        theme_parser.Parse();
-        var stead_div:Element = Browser.document.getElementById('stead');
-        if(theme_parser.theme.exists('scr.gfx.bg'))
-            stead_div.style.backgroundImage = 'url(gamesource/'+theme_parser.theme.get('scr.gfx.bg')+')';
-        if(theme_parser.theme.exists('scr.h') && theme_parser.theme.exists('scr.w'))
-        {
-            stead_div.style.width = theme_parser.theme.get('scr.w') + 'px';
-            stead_div.style.height = theme_parser.theme.get('scr.h') + 'px';
-        }
+        //theme_parser = new ThemeParser();
+		ApplyTheme();
     }
 
+	private function ApplyTheme() {
+		ThemeParser.Instance().Parse();
+        var stead_div:Element = Browser.document.getElementById('stead');
+		var win_div:Element = Browser.document.getElementById('win');
+		var inv_div:Element = Browser.document.getElementById('inventory');
+        if(ThemeParser.Instance().theme.exists('scr.gfx.bg'))
+            stead_div.style.backgroundImage = 'url(gamesource/'+ThemeParser.Instance().theme.get('scr.gfx.bg')+')';
+        if(ThemeParser.Instance().theme.exists('scr.w') && ThemeParser.Instance().theme.exists('scr.h')) {
+            stead_div.style.width = ThemeParser.Instance().theme.get('scr.w') + 'px';
+            stead_div.style.height = ThemeParser.Instance().theme.get('scr.h') + 'px';
+			stead_div.style.left = ThemeParser.Instance().theme.get('scr.x') + 'px';
+			stead_div.style.top = ThemeParser.Instance().theme.get('scr.y') + 'px';
+        }
+		if (ThemeParser.Instance().theme.exists('win.w') && ThemeParser.Instance().theme.exists('win.h')) {
+			win_div.style.width = ThemeParser.Instance().theme.get('win.w') + 'px';
+            win_div.style.height = ThemeParser.Instance().theme.get('win.h') + 'px';
+            win_div.style.left = ThemeParser.Instance().theme.get('win.x') + 'px';
+			win_div.style.top = ThemeParser.Instance().theme.get('win.y') + 'px';
+		}
+		if (ThemeParser.Instance().theme.exists('inv.w') && ThemeParser.Instance().theme.exists('inv.h')) {
+			inv_div.style.width = ThemeParser.Instance().theme.get('inv.w') + 'px';
+            inv_div.style.height = ThemeParser.Instance().theme.get('inv.h') + 'px';
+            inv_div.style.left = ThemeParser.Instance().theme.get('inv.x') + 'px';
+			inv_div.style.top = ThemeParser.Instance().theme.get('inv.y') + 'px';
+		}
+	}
+	
     static function main() {
         var object:Main = new Main();
     }

@@ -50,18 +50,38 @@ List.prototype = {
 };
 var Main = function() {
 	this.stead_dispatcher = new stead.SteadDispatcher();
-	this.theme_parser = new ThemeParser();
-	this.theme_parser.Parse();
-	var stead_div = window.document.getElementById("stead");
-	if(this.theme_parser.theme.exists("scr.gfx.bg")) stead_div.style.backgroundImage = "url(gamesource/" + this.theme_parser.theme.get("scr.gfx.bg") + ")";
-	if(this.theme_parser.theme.exists("scr.h") && this.theme_parser.theme.exists("scr.w")) {
-		stead_div.style.width = this.theme_parser.theme.get("scr.w") + "px";
-		stead_div.style.height = this.theme_parser.theme.get("scr.h") + "px";
-	}
+	this.ApplyTheme();
 };
 Main.__name__ = true;
 Main.main = function() {
 	var object = new Main();
+};
+Main.prototype = {
+	ApplyTheme: function() {
+		ThemeParser.Instance().Parse();
+		var stead_div = window.document.getElementById("stead");
+		var win_div = window.document.getElementById("win");
+		var inv_div = window.document.getElementById("inventory");
+		if(ThemeParser.Instance().theme.exists("scr.gfx.bg")) stead_div.style.backgroundImage = "url(gamesource/" + ThemeParser.Instance().theme.get("scr.gfx.bg") + ")";
+		if(ThemeParser.Instance().theme.exists("scr.w") && ThemeParser.Instance().theme.exists("scr.h")) {
+			stead_div.style.width = ThemeParser.Instance().theme.get("scr.w") + "px";
+			stead_div.style.height = ThemeParser.Instance().theme.get("scr.h") + "px";
+			stead_div.style.left = ThemeParser.Instance().theme.get("scr.x") + "px";
+			stead_div.style.top = ThemeParser.Instance().theme.get("scr.y") + "px";
+		}
+		if(ThemeParser.Instance().theme.exists("win.w") && ThemeParser.Instance().theme.exists("win.h")) {
+			win_div.style.width = ThemeParser.Instance().theme.get("win.w") + "px";
+			win_div.style.height = ThemeParser.Instance().theme.get("win.h") + "px";
+			win_div.style.left = ThemeParser.Instance().theme.get("win.x") + "px";
+			win_div.style.top = ThemeParser.Instance().theme.get("win.y") + "px";
+		}
+		if(ThemeParser.Instance().theme.exists("inv.w") && ThemeParser.Instance().theme.exists("inv.h")) {
+			inv_div.style.width = ThemeParser.Instance().theme.get("inv.w") + "px";
+			inv_div.style.height = ThemeParser.Instance().theme.get("inv.h") + "px";
+			inv_div.style.left = ThemeParser.Instance().theme.get("inv.x") + "px";
+			inv_div.style.top = ThemeParser.Instance().theme.get("inv.y") + "px";
+		}
+	}
 };
 var IMap = function() { };
 IMap.__name__ = true;
@@ -79,6 +99,10 @@ var ThemeParser = function() {
 	this.theme = new haxe.ds.StringMap();
 };
 ThemeParser.__name__ = true;
+ThemeParser.Instance = function() {
+	if(ThemeParser.instance == null) ThemeParser.instance = new ThemeParser();
+	return ThemeParser.instance;
+};
 ThemeParser.prototype = {
 	Parse: function() {
 		var theme_file = haxe.Http.requestUrl("gamesource/theme.ini").split("\n");
@@ -89,6 +113,7 @@ ThemeParser.prototype = {
 			var pair = line.split(" = ");
 			if(pair.length == 2) this.theme.set(pair[0],pair[1]);
 		}
+		if(this.theme.exists("inv.mode") && this.theme.get("inv.mode").indexOf("vertical") != -1) ThemeParser.horizontal_inventory = false;
 	}
 };
 var haxe = {};
@@ -341,7 +366,7 @@ stead.SteadDispatcher.get_dofile = $hx_exports.stead.SteadDispatcher.get_dofile 
 	return stead.SteadDispatcher._dofile_path;
 };
 stead.SteadDispatcher.getInv = function() {
-	var retVal = stead.SteadDispatcher.interpreter.call("instead.get_inv(true)");
+	var retVal = stead.SteadDispatcher.interpreter.call("instead.get_inv(" + Std.string(ThemeParser.horizontal_inventory) + ")");
 	if(retVal[0] != null) {
 		var invAnswer = Std.string(retVal[0]);
 		stead.SteadDispatcher.setContent("inventory",invAnswer,stead.EField.Inv);
@@ -414,6 +439,8 @@ Array.__name__ = true;
 var q = window.jQuery;
 js.JQuery = q;
 ThemeParser.game_folder = "gamesource";
+ThemeParser.horizontal_inventory = true;
+ThemeParser.left_inventory = false;
 stead.SteadDispatcher._dofile_path = "";
 stead.SteadDispatcher.interpreter = new Interpreter();
 stead.SteadDispatcher.act = false;

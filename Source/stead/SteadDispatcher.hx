@@ -102,7 +102,8 @@ class SteadDispatcher
 
     private static function getInv()
     {
-        var retVal:Array<Dynamic> = interpreter.call("instead.get_inv(true)");
+        var retVal:Array<Dynamic> = interpreter.call("instead.get_inv(" + Std.string(ThemeParser.horizontal_inventory)
+		+ ")");
         if (retVal[0] != null)
         {
             var invAnswer:String = Std.string(retVal[0]);
