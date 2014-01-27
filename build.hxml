@@ -1,3 +1,4 @@
 -js js_src/instead_hx.js
+-lib cocktail
 -cp Source
 -main Main
