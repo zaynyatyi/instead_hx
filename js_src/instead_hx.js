@@ -10,6 +10,7 @@ EReg.prototype = {
 	replace: function(s,by) {
 		return s.replace(this.r,by);
 	}
+	,__class__: EReg
 };
 var HxOverrides = function() { };
 HxOverrides.__name__ = true;
@@ -47,9 +48,11 @@ List.prototype = {
 			return x;
 		}};
 	}
+	,__class__: List
 };
 var Main = function() {
 	this.stead_dispatcher = new stead.SteadDispatcher();
+	stead.UseIndicator.Instance().PowerOff();
 	this.ApplyTheme();
 };
 Main.__name__ = true;
@@ -58,30 +61,39 @@ Main.main = function() {
 };
 Main.prototype = {
 	ApplyTheme: function() {
-		ThemeParser.Instance().Parse();
+		stead.ThemeParser.Instance().Parse();
 		var stead_div = window.document.getElementById("stead");
 		var win_div = window.document.getElementById("win");
 		var inv_div = window.document.getElementById("inventory");
-		if(ThemeParser.Instance().theme.exists("scr.gfx.bg")) stead_div.style.backgroundImage = "url(gamesource/" + ThemeParser.Instance().theme.get("scr.gfx.bg") + ")";
-		if(ThemeParser.Instance().theme.exists("scr.w") && ThemeParser.Instance().theme.exists("scr.h")) {
-			stead_div.style.width = ThemeParser.Instance().theme.get("scr.w") + "px";
-			stead_div.style.height = ThemeParser.Instance().theme.get("scr.h") + "px";
-			stead_div.style.left = ThemeParser.Instance().theme.get("scr.x") + "px";
-			stead_div.style.top = ThemeParser.Instance().theme.get("scr.y") + "px";
+		var cog_div = window.document.getElementById("cog");
+		if(stead.ThemeParser.Instance().theme.exists("scr.gfx.bg")) stead_div.style.backgroundImage = "url(gamesource/" + stead.ThemeParser.Instance().theme.get("scr.gfx.bg") + ")";
+		if(stead.ThemeParser.Instance().theme.exists("scr.w") && stead.ThemeParser.Instance().theme.exists("scr.h")) {
+			stead_div.style.width = stead.ThemeParser.Instance().theme.get("scr.w") + "px";
+			stead_div.style.height = stead.ThemeParser.Instance().theme.get("scr.h") + "px";
+			stead_div.style.left = stead.ThemeParser.Instance().theme.get("scr.x") + "px";
+			stead_div.style.top = stead.ThemeParser.Instance().theme.get("scr.y") + "px";
 		}
-		if(ThemeParser.Instance().theme.exists("win.w") && ThemeParser.Instance().theme.exists("win.h")) {
-			win_div.style.width = ThemeParser.Instance().theme.get("win.w") + "px";
-			win_div.style.height = ThemeParser.Instance().theme.get("win.h") + "px";
-			win_div.style.left = ThemeParser.Instance().theme.get("win.x") + "px";
-			win_div.style.top = ThemeParser.Instance().theme.get("win.y") + "px";
+		if(stead.ThemeParser.Instance().theme.exists("win.w") && stead.ThemeParser.Instance().theme.exists("win.h")) {
+			win_div.style.width = stead.ThemeParser.Instance().theme.get("win.w") + "px";
+			win_div.style.height = stead.ThemeParser.Instance().theme.get("win.h") + "px";
+			win_div.style.left = stead.ThemeParser.Instance().theme.get("win.x") + "px";
+			win_div.style.top = stead.ThemeParser.Instance().theme.get("win.y") + "px";
 		}
-		if(ThemeParser.Instance().theme.exists("inv.w") && ThemeParser.Instance().theme.exists("inv.h")) {
-			inv_div.style.width = ThemeParser.Instance().theme.get("inv.w") + "px";
-			inv_div.style.height = ThemeParser.Instance().theme.get("inv.h") + "px";
-			inv_div.style.left = ThemeParser.Instance().theme.get("inv.x") + "px";
-			inv_div.style.top = ThemeParser.Instance().theme.get("inv.y") + "px";
+		if(stead.ThemeParser.Instance().theme.exists("inv.w") && stead.ThemeParser.Instance().theme.exists("inv.h")) {
+			inv_div.style.width = stead.ThemeParser.Instance().theme.get("inv.w") + "px";
+			inv_div.style.height = stead.ThemeParser.Instance().theme.get("inv.h") + "px";
+			inv_div.style.left = stead.ThemeParser.Instance().theme.get("inv.x") + "px";
+			inv_div.style.top = stead.ThemeParser.Instance().theme.get("inv.y") + "px";
 		}
+		if(stead.ThemeParser.Instance().theme.exists("cog.x") && stead.ThemeParser.Instance().theme.exists("cog.y")) {
+			cog_div.style.width = stead.ThemeParser.Instance().theme.get("cog.w") + "px";
+			cog_div.style.height = stead.ThemeParser.Instance().theme.get("cog.h") + "px";
+			cog_div.style.left = stead.ThemeParser.Instance().theme.get("cog.x") + "px";
+			cog_div.style.top = stead.ThemeParser.Instance().theme.get("cog.y") + "px";
+		}
+		if(stead.ThemeParser.Instance().theme.exists("cog.gfx")) cog_div.style.backgroundImage = "url(gamesource/" + stead.ThemeParser.Instance().theme.get("cog.gfx") + ")";
 	}
+	,__class__: Main
 };
 var IMap = function() { };
 IMap.__name__ = true;
@@ -94,27 +106,6 @@ var StringTools = function() { };
 StringTools.__name__ = true;
 StringTools.urlEncode = function(s) {
 	return encodeURIComponent(s);
-};
-var ThemeParser = function() {
-	this.theme = new haxe.ds.StringMap();
-};
-ThemeParser.__name__ = true;
-ThemeParser.Instance = function() {
-	if(ThemeParser.instance == null) ThemeParser.instance = new ThemeParser();
-	return ThemeParser.instance;
-};
-ThemeParser.prototype = {
-	Parse: function() {
-		var theme_file = haxe.Http.requestUrl("gamesource/theme.ini").split("\n");
-		var _g = 0;
-		while(_g < theme_file.length) {
-			var line = theme_file[_g];
-			++_g;
-			var pair = line.split(" = ");
-			if(pair.length == 2) this.theme.set(pair[0],pair[1]);
-		}
-		if(this.theme.exists("inv.mode") && this.theme.get("inv.mode").indexOf("vertical") != -1) ThemeParser.horizontal_inventory = false;
-	}
 };
 var haxe = {};
 haxe.Http = function(url) {
@@ -201,6 +192,7 @@ haxe.Http.prototype = {
 	}
 	,onStatus: function(status) {
 	}
+	,__class__: haxe.Http
 };
 haxe.ds = {};
 haxe.ds.StringMap = function() {
@@ -218,6 +210,7 @@ haxe.ds.StringMap.prototype = {
 	,exists: function(key) {
 		return this.h.hasOwnProperty("$" + key);
 	}
+	,__class__: haxe.ds.StringMap
 };
 var js = {};
 js.Boot = function() { };
@@ -289,6 +282,49 @@ js.Boot.__string_rec = function(o,s) {
 		return String(o);
 	}
 };
+js.Boot.__interfLoop = function(cc,cl) {
+	if(cc == null) return false;
+	if(cc == cl) return true;
+	var intf = cc.__interfaces__;
+	if(intf != null) {
+		var _g1 = 0;
+		var _g = intf.length;
+		while(_g1 < _g) {
+			var i = _g1++;
+			var i1 = intf[i];
+			if(i1 == cl || js.Boot.__interfLoop(i1,cl)) return true;
+		}
+	}
+	return js.Boot.__interfLoop(cc.__super__,cl);
+};
+js.Boot.__instanceof = function(o,cl) {
+	if(cl == null) return false;
+	switch(cl) {
+	case Int:
+		return (o|0) === o;
+	case Float:
+		return typeof(o) == "number";
+	case Bool:
+		return typeof(o) == "boolean";
+	case String:
+		return typeof(o) == "string";
+	case Dynamic:
+		return true;
+	default:
+		if(o != null) {
+			if(typeof(cl) == "function") {
+				if(o instanceof cl) {
+					if(cl == Array) return o.__enum__ == null;
+					return true;
+				}
+				if(js.Boot.__interfLoop(o.__class__,cl)) return true;
+			}
+		} else return false;
+		if(cl == Class && o.__name__ != null) return true;
+		if(cl == Enum && o.__ename__ != null) return true;
+		return o.__enum__ == cl;
+	}
+};
 js.Browser = function() { };
 js.Browser.__name__ = true;
 js.Browser.createXMLHttpRequest = function() {
@@ -319,10 +355,12 @@ stead.SteadDispatcher = function() {
 	stead.SteadDispatcher.interpreter.load("web.lua");
 	stead.SteadDispatcher.interpreter.load("stead.lua");
 	stead.SteadDispatcher.interpreter.load("gui.lua");
-	stead.SteadDispatcher._dofile_path = "./" + ThemeParser.game_folder + "/";
+	stead.SteadDispatcher._dofile_path = "./" + stead.ThemeParser.game_folder + "/";
 	stead.SteadDispatcher.interpreter.load(stead.SteadDispatcher._dofile_path + "main.lua");
 	stead.SteadDispatcher.interpreter.call("game.ini(game)");
 	stead.SteadDispatcher.canvas = window.document.getElementById("canvas");
+	var stead_div = window.document.getElementById("stead");
+	stead_div.onclick = $bind(this,this.OnSteadClick);
 	stead.SteadDispatcher.look();
 };
 stead.SteadDispatcher.__name__ = true;
@@ -337,8 +375,9 @@ stead.SteadDispatcher.refreshInterface = function() {
 	stead.SteadDispatcher.getPicture();
 	stead.SteadDispatcher.getMusic();
 };
-stead.SteadDispatcher.click = $hx_exports.stead.SteadDispatcher.click = function(ref,field) {
-	if(stead.SteadDispatcher.act || field == stead.EField.Inv[1]) {
+stead.SteadDispatcher.click = $hx_exports.stead.SteadDispatcher.click = function(ref,field,onstead) {
+	if(onstead == null) onstead = false;
+	if(!onstead && (stead.SteadDispatcher.act || field == stead.EField.Inv[1])) {
 		ref = HxOverrides.substr(ref,1,null);
 		if(HxOverrides.substr(ref,0,3) == "act") {
 			ref = "use " + HxOverrides.substr(ref,4,null);
@@ -350,14 +389,21 @@ stead.SteadDispatcher.click = $hx_exports.stead.SteadDispatcher.click = function
 			if(field != stead.EField.Ways[1] && field != stead.EField.Title[1]) {
 				if(ref == stead.SteadDispatcher.thing) stead.SteadDispatcher.ifaceCmd("\"use " + ref + "\""); else stead.SteadDispatcher.ifaceCmd("\"use " + stead.SteadDispatcher.thing + "," + ref + "\"");
 				stead.SteadDispatcher.act = false;
+				stead.UseIndicator.Instance().PowerOff();
 				stead.SteadDispatcher.thing = "";
 				stead.SteadDispatcher.refreshInterface();
 			}
 		} else {
 			stead.SteadDispatcher.act = true;
 			stead.SteadDispatcher.thing = ref;
+			stead.UseIndicator.Instance().PowerOn();
 		}
 	} else {
+		if(stead.SteadDispatcher.act = true) {
+			stead.SteadDispatcher.act = false;
+			stead.UseIndicator.Instance().PowerOff();
+			stead.SteadDispatcher.thing = "";
+		}
 		stead.SteadDispatcher.ifaceCmd("\"" + ref + "\"");
 		stead.SteadDispatcher.refreshInterface();
 	}
@@ -366,7 +412,7 @@ stead.SteadDispatcher.get_dofile = $hx_exports.stead.SteadDispatcher.get_dofile 
 	return stead.SteadDispatcher._dofile_path;
 };
 stead.SteadDispatcher.getInv = function() {
-	var retVal = stead.SteadDispatcher.interpreter.call("instead.get_inv(" + Std.string(ThemeParser.horizontal_inventory) + ")");
+	var retVal = stead.SteadDispatcher.interpreter.call("instead.get_inv(" + Std.string(stead.ThemeParser.horizontal_inventory) + ")");
 	if(retVal[0] != null) {
 		var invAnswer = Std.string(retVal[0]);
 		stead.SteadDispatcher.setContent("inventory",invAnswer,stead.EField.Inv);
@@ -434,16 +480,76 @@ stead.SteadDispatcher.normalizeContent = function(input,field) {
 	output = r.replace(output,"<span class=\"nowrap\">$1</span>");
 	return output;
 };
+stead.SteadDispatcher.prototype = {
+	OnSteadClick: function(e) {
+		if(!js.Boot.__instanceof(e.target,HTMLAnchorElement) && !js.Boot.__instanceof(e.target,HTMLSpanElement)) {
+			stead.SteadDispatcher.click("",0,true);
+			var i = 0;
+		}
+	}
+	,__class__: stead.SteadDispatcher
+};
+stead.ThemeParser = function() {
+	this.theme = new haxe.ds.StringMap();
+};
+stead.ThemeParser.__name__ = true;
+stead.ThemeParser.Instance = function() {
+	if(stead.ThemeParser.instance == null) stead.ThemeParser.instance = new stead.ThemeParser();
+	return stead.ThemeParser.instance;
+};
+stead.ThemeParser.prototype = {
+	Parse: function() {
+		var theme_file = haxe.Http.requestUrl("gamesource/theme.ini").split("\n");
+		var _g = 0;
+		while(_g < theme_file.length) {
+			var line = theme_file[_g];
+			++_g;
+			var pair = line.split(" = ");
+			if(pair.length == 2) this.theme.set(pair[0],pair[1]);
+		}
+		if(this.theme.exists("inv.mode") && this.theme.get("inv.mode").indexOf("vertical") != -1) stead.ThemeParser.horizontal_inventory = false;
+	}
+	,__class__: stead.ThemeParser
+};
+stead.UseIndicator = function() {
+	this.cog = window.document.getElementById("cog");
+};
+stead.UseIndicator.__name__ = true;
+stead.UseIndicator.Instance = function() {
+	if(stead.UseIndicator.instance == null) stead.UseIndicator.instance = new stead.UseIndicator();
+	return stead.UseIndicator.instance;
+};
+stead.UseIndicator.prototype = {
+	PowerOn: function() {
+		this.cog.style.visibility = "visible";
+	}
+	,PowerOff: function() {
+		this.cog.style.visibility = "hidden";
+	}
+	,__class__: stead.UseIndicator
+};
+var $_, $fid = 0;
+function $bind(o,m) { if( m == null ) return null; if( m.__id__ == null ) m.__id__ = $fid++; var f; if( o.hx__closures__ == null ) o.hx__closures__ = {}; else f = o.hx__closures__[m.__id__]; if( f == null ) { f = function(){ return f.method.apply(f.scope, arguments); }; f.scope = o; f.method = m; o.hx__closures__[m.__id__] = f; } return f; }
+String.prototype.__class__ = String;
 String.__name__ = true;
+Array.prototype.__class__ = Array;
 Array.__name__ = true;
+var Int = { __name__ : ["Int"]};
+var Dynamic = { __name__ : ["Dynamic"]};
+var Float = Number;
+Float.__name__ = ["Float"];
+var Bool = Boolean;
+Bool.__ename__ = ["Bool"];
+var Class = { __name__ : ["Class"]};
+var Enum = { };
 var q = window.jQuery;
 js.JQuery = q;
-ThemeParser.game_folder = "gamesource";
-ThemeParser.horizontal_inventory = true;
-ThemeParser.left_inventory = false;
 stead.SteadDispatcher._dofile_path = "";
 stead.SteadDispatcher.interpreter = new Interpreter();
 stead.SteadDispatcher.act = false;
 stead.SteadDispatcher.thing = "";
+stead.ThemeParser.game_folder = "gamesource";
+stead.ThemeParser.horizontal_inventory = true;
+stead.ThemeParser.left_inventory = false;
 Main.main();
 })(typeof window != "undefined" ? window : exports);

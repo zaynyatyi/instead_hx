@@ -1,13 +1,16 @@
 package stead;
 
 import js.Browser;
+import js.html.AnchorElement;
 import js.html.CanvasElement;
+import js.html.Element;
 import js.html.Event;
 import js.html.Image;
+import js.html.SpanElement;
 import js.JQuery;
 import js.Lib;
 
-import ThemeParser;
+import stead.ThemeParser;
 
 /**
  * ...
@@ -39,10 +42,18 @@ class SteadDispatcher
         interpreter.call("game.ini(game)");
 
         canvas = cast Browser.document.getElementById("canvas");
-
+		var stead_div:Element = Browser.document.getElementById("stead");
+		stead_div.onclick = OnSteadClick;
         look();
     }
 
+	private function OnSteadClick(e:Event):Void {
+		if(!Std.is(e.target, AnchorElement) && !Std.is(e.target, SpanElement)) {
+			click("", 0, true);
+			var i = 0;
+		}
+	}
+	
     public static function look()
     {
         ifaceCmd("\"look\"");
@@ -58,21 +69,18 @@ class SteadDispatcher
         getMusic();
     }
 
-    @:expose public static function click(ref:String, field:Int):Void
+    @:expose public static function click(ref:String, field:Int, onstead:Bool = false):Void
     {
-        if (act || field == Inv.getIndex())
-        {
+        if (!onstead && (act || field == Inv.getIndex())) {
             ref = ref.substr(1);
-            if (ref.substr(0, 3) == "act")
-            {
+            if (ref.substr(0, 3) == "act") {
                 ref = "use " + ref.substr(4);
                 ifaceCmd("\"" + ref + "\"");
                 refreshInterface();
                 return;
             }
 
-            if (act)
-            {
+            if (act) {
                 if (field != Ways.getIndex() && field != Title.getIndex())
                 {
                     if (ref == thing)
@@ -82,14 +90,21 @@ class SteadDispatcher
                         ifaceCmd("\"use " + thing + ',' + ref + "\"");
                     }
                     act = false;
+					UseIndicator.Instance().PowerOff();
                     thing = "";
                     refreshInterface();
                 }
             }else {
                 act = true;
                 thing = ref;
+				UseIndicator.Instance().PowerOn();
             }
         }else {
+			if (act = true) {
+				act = false;
+				UseIndicator.Instance().PowerOff();
+				thing = "";
+			}
             ifaceCmd("\"" + ref + "\"");
             refreshInterface();
         }

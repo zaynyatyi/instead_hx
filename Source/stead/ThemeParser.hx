@@ -1,4 +1,4 @@
-package;
+package stead;
 
 import haxe.Http;
 
