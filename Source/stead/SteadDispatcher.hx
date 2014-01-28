@@ -213,8 +213,8 @@ class SteadDispatcher
     private static function normalizeContent(input:String, field:EField):String
     {
         var output:String = "";
-		var r:EReg = ~/<a(:)([\w+\d+ ]+)>((&#160;)+)/g;
-		output = r.replace(input, "$3<a href=\"javascript:stead.SteadDispatcher.click(\'#$2\', " + field.getIndex() + ")\">");
+		var r:EReg = ~/<a(:)([\w+\d+ ]+)>(<i>|)((&#160;)+)/g;
+		output = r.replace(input, "$4<a href=\"javascript:stead.SteadDispatcher.click(\'#$2\', " + field.getIndex() + ")\">$3");
         r = ~/<a(:)([\w+\d+ ]+)/g;
         output = r.replace(output, "<a href=\"javascript:stead.SteadDispatcher.click(\'#$2\', " + field.getIndex() + ")\"");
         r = ~/<w:([^>]+)>/g;

@@ -474,8 +474,8 @@ stead.SteadDispatcher.setContent = function(id,content,field) {
 };
 stead.SteadDispatcher.normalizeContent = function(input,field) {
 	var output = "";
-	var r = new EReg("<a(:)([\\w+\\d+ ]+)>((&#160;)+)","g");
-	output = r.replace(input,"$3<a href=\"javascript:stead.SteadDispatcher.click('#$2', " + field[1] + ")\">");
+	var r = new EReg("<a(:)([\\w+\\d+ ]+)>(<i>|)((&#160;)+)","g");
+	output = r.replace(input,"$4<a href=\"javascript:stead.SteadDispatcher.click('#$2', " + field[1] + ")\">$3");
 	r = new EReg("<a(:)([\\w+\\d+ ]+)","g");
 	output = r.replace(output,"<a href=\"javascript:stead.SteadDispatcher.click('#$2', " + field[1] + ")\"");
 	r = new EReg("<w:([^>]+)>","g");
