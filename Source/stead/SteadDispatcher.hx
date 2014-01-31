@@ -123,7 +123,9 @@ class SteadDispatcher
         {
             var invAnswer:String = Std.string(retVal[0]);
             setContent("inventory", invAnswer, Inv);
-        }
+        }else {
+			setContent("inventory", "", Inv);
+		}
     }
 
     private static function getWays()

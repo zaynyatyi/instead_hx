@@ -416,7 +416,7 @@ stead.SteadDispatcher.getInv = function() {
 	if(retVal[0] != null) {
 		var invAnswer = Std.string(retVal[0]);
 		stead.SteadDispatcher.setContent("inventory",invAnswer,stead.EField.Inv);
-	}
+	} else stead.SteadDispatcher.setContent("inventory","",stead.EField.Inv);
 };
 stead.SteadDispatcher.getWays = function() {
 	var waysAnswer = Std.string(stead.SteadDispatcher.interpreter.call("instead.get_ways()")[0]);
