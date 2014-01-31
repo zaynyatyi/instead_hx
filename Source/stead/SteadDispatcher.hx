@@ -31,6 +31,7 @@ class SteadDispatcher
     private static var act:Bool = false;
     private static var thing:String = "";
     private static var canvas:CanvasElement;
+	private static var win:Element;
 
     public function new()
     {
@@ -42,6 +43,7 @@ class SteadDispatcher
         interpreter.call("game.ini(game)");
 
         canvas = cast Browser.document.getElementById("canvas");
+		win = Browser.document.getElementById('win');
 		var stead_div:Element = Browser.document.getElementById("stead");
 		stead_div.onclick = OnSteadClick;
         look();
@@ -67,6 +69,7 @@ class SteadDispatcher
         getInv();
         getPicture();
         getMusic();
+		win.scrollByLines(-65535);
     }
 
     @:expose public static function click(ref:String, field:Int, onstead:Bool = false):Void

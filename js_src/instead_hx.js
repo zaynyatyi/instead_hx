@@ -92,6 +92,14 @@ Main.prototype = {
 			cog_div.style.top = stead.ThemeParser.Instance().theme.get("cog.y") + "px";
 		}
 		if(stead.ThemeParser.Instance().theme.exists("cog.gfx")) cog_div.style.backgroundImage = "url(gamesource/" + stead.ThemeParser.Instance().theme.get("cog.gfx") + ")";
+		var styleSheet;
+		styleSheet = js.Boot.__cast(window.document.styleSheets[0] , CSSStyleSheet);
+		styleSheet.addRule("#win a","color: " + stead.ThemeParser.Instance().theme.get("win.col.link") + ";");
+		styleSheet.addRule("#win","color: " + stead.ThemeParser.Instance().theme.get("win.col.fg") + ";");
+		styleSheet.addRule("#win a:hover","color: " + stead.ThemeParser.Instance().theme.get("win.col.alink") + ";");
+		styleSheet.addRule("#inventory a","color: " + stead.ThemeParser.Instance().theme.get("inv.col.link") + ";");
+		styleSheet.addRule("#inventory","color: " + stead.ThemeParser.Instance().theme.get("inv.col.fg") + ";");
+		styleSheet.addRule("#inventory a:hover","color: " + stead.ThemeParser.Instance().theme.get("inv.col.alink") + ";");
 	}
 	,__class__: Main
 };
@@ -325,6 +333,9 @@ js.Boot.__instanceof = function(o,cl) {
 		return o.__enum__ == cl;
 	}
 };
+js.Boot.__cast = function(o,t) {
+	if(js.Boot.__instanceof(o,t)) return o; else throw "Cannot cast " + Std.string(o) + " to " + Std.string(t);
+};
 js.Browser = function() { };
 js.Browser.__name__ = true;
 js.Browser.createXMLHttpRequest = function() {
@@ -359,6 +370,7 @@ stead.SteadDispatcher = function() {
 	stead.SteadDispatcher.interpreter.load(stead.SteadDispatcher._dofile_path + "main.lua");
 	stead.SteadDispatcher.interpreter.call("game.ini(game)");
 	stead.SteadDispatcher.canvas = window.document.getElementById("canvas");
+	stead.SteadDispatcher.win = window.document.getElementById("win");
 	var stead_div = window.document.getElementById("stead");
 	stead_div.onclick = $bind(this,this.OnSteadClick);
 	stead.SteadDispatcher.look();
@@ -374,6 +386,7 @@ stead.SteadDispatcher.refreshInterface = function() {
 	stead.SteadDispatcher.getInv();
 	stead.SteadDispatcher.getPicture();
 	stead.SteadDispatcher.getMusic();
+	stead.SteadDispatcher.win.scrollByLines(-65535);
 };
 stead.SteadDispatcher.click = $hx_exports.stead.SteadDispatcher.click = function(ref,field,onstead) {
 	if(onstead == null) onstead = false;

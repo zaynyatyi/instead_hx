@@ -6,6 +6,7 @@ import stead.UseIndicator;
 import js.Browser;
 import js.html.CSSStyleSheet;
 import js.html.Element;
+import js.JQuery;
 
 class Main {
 
@@ -51,7 +52,16 @@ class Main {
 			cog_div.style.top = ThemeParser.Instance().theme.get('cog.y') + 'px';
 		}
 		if(ThemeParser.Instance().theme.exists('cog.gfx'))
-            cog_div.style.backgroundImage = 'url(gamesource/'+ThemeParser.Instance().theme.get('cog.gfx')+')';
+            cog_div.style.backgroundImage = 'url(gamesource/' + ThemeParser.Instance().theme.get('cog.gfx') + ')';
+		
+		var styleSheet:CSSStyleSheet = cast(Browser.document.styleSheets[0], CSSStyleSheet);
+		styleSheet.addRule("#win a", "color: " + ThemeParser.Instance().theme.get('win.col.link') + ";");
+		styleSheet.addRule("#win", "color: " + ThemeParser.Instance().theme.get('win.col.fg') + ";");
+		styleSheet.addRule("#win a:hover", "color: " + ThemeParser.Instance().theme.get('win.col.alink') + ";");
+		
+		styleSheet.addRule("#inventory a", "color: " + ThemeParser.Instance().theme.get('inv.col.link') + ";");
+		styleSheet.addRule("#inventory", "color: " + ThemeParser.Instance().theme.get('inv.col.fg') + ";");
+		styleSheet.addRule("#inventory a:hover", "color: " + ThemeParser.Instance().theme.get('inv.col.alink') + ";");
 	}
 	
     static function main() {
