@@ -31,7 +31,7 @@ class SteadDispatcher
     private static var act:Bool = false;
     private static var thing:String = "";
     private static var canvas:CanvasElement;
-	private static var win:Element;
+    private static var win:Element;
 
     public function new()
     {
@@ -43,19 +43,19 @@ class SteadDispatcher
         interpreter.call("game.ini(game)");
 
         canvas = cast Browser.document.getElementById("canvas");
-		win = Browser.document.getElementById('win');
-		var stead_div:Element = Browser.document.getElementById("stead");
-		stead_div.onclick = OnSteadClick;
+        win = Browser.document.getElementById('win');
+        var stead_div:Element = Browser.document.getElementById("stead");
+        stead_div.onclick = OnSteadClick;
         look();
     }
 
-	private function OnSteadClick(e:Event):Void {
-		if(!Std.is(e.target, AnchorElement) && !Std.is(e.target, SpanElement)) {
-			click("", 0, true);
-			var i = 0;
-		}
-	}
-	
+    private function OnSteadClick(e:Event):Void {
+        if(!Std.is(e.target, AnchorElement) && !Std.is(e.target, SpanElement)) {
+            click("", 0, true);
+            var i = 0;
+        }
+    }
+
     public static function look()
     {
         ifaceCmd("\"look\"");
@@ -69,7 +69,7 @@ class SteadDispatcher
         getInv();
         getPicture();
         getMusic();
-		win.scrollByLines(-65535);
+        win.scrollTop = 0;
     }
 
     @:expose public static function click(ref:String, field:Int, onstead:Bool = false):Void
@@ -93,21 +93,21 @@ class SteadDispatcher
                         ifaceCmd("\"use " + thing + ',' + ref + "\"");
                     }
                     act = false;
-					UseIndicator.Instance().PowerOff();
+                    UseIndicator.Instance().PowerOff();
                     thing = "";
                     refreshInterface();
                 }
             }else {
                 act = true;
                 thing = ref;
-				UseIndicator.Instance().PowerOn();
+                UseIndicator.Instance().PowerOn();
             }
         }else {
-			if (act = true) {
-				act = false;
-				UseIndicator.Instance().PowerOff();
-				thing = "";
-			}
+            if (act = true) {
+                act = false;
+                UseIndicator.Instance().PowerOff();
+                thing = "";
+            }
             ifaceCmd("\"" + ref + "\"");
             refreshInterface();
         }
@@ -121,14 +121,14 @@ class SteadDispatcher
     private static function getInv()
     {
         var retVal:Array<Dynamic> = interpreter.call("instead.get_inv(" + Std.string(ThemeParser.horizontal_inventory)
-		+ ")");
+                + ")");
         if (retVal[0] != null)
         {
             var invAnswer:String = Std.string(retVal[0]);
             setContent("inventory", invAnswer, Inv);
         }else {
-			setContent("inventory", "", Inv);
-		}
+            setContent("inventory", "", Inv);
+        }
     }
 
     private static function getWays()
@@ -218,8 +218,8 @@ class SteadDispatcher
     private static function normalizeContent(input:String, field:EField):String
     {
         var output:String = "";
-		var r:EReg = ~/<a(:)([\w+\d+ ]+)>(<i>|)((&#160;)+)/g;
-		output = r.replace(input, "$4<a href=\"javascript:stead.SteadDispatcher.click(\'#$2\', " + field.getIndex() + ")\">$3");
+        var r:EReg = ~/<a(:)([\w+\d+ ]+)>(<i>|)((&#160;)+)/g;
+        output = r.replace(input, "$4<a href=\"javascript:stead.SteadDispatcher.click(\'#$2\', " + field.getIndex() + ")\">$3");
         r = ~/<a(:)([\w+\d+ ]+)/g;
         output = r.replace(output, "<a href=\"javascript:stead.SteadDispatcher.click(\'#$2\', " + field.getIndex() + ")\"");
         r = ~/<w:([^>]+)>/g;

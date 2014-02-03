@@ -386,7 +386,7 @@ stead.SteadDispatcher.refreshInterface = function() {
 	stead.SteadDispatcher.getInv();
 	stead.SteadDispatcher.getPicture();
 	stead.SteadDispatcher.getMusic();
-	stead.SteadDispatcher.win.scrollByLines(-65535);
+	stead.SteadDispatcher.win.scrollTop = 0;
 };
 stead.SteadDispatcher.click = $hx_exports.stead.SteadDispatcher.click = function(ref,field,onstead) {
 	if(onstead == null) onstead = false;
