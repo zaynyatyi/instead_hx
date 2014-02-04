@@ -23,13 +23,14 @@ end
 virtualfile.create = virtualfile.create
 
 function virtualfile:write(...)
-	for i,v in ipairs(arg) do
+    local a = { ... }
+	for i,v in ipairs(a) do
 		self.data = self.data .. tostring(v);
 	end
 end
 
 function virtualfile:flush()
-	js.run("localStorage." .. self.name .. " = " .. self.data .. ";")
+	js.run("localStorage." .. self.name .. " = " .. string.gsub(string.format("%q", self.data), "\n", "\\n") .. ";")
 end
 
 function virtualfile:close()
@@ -37,8 +38,10 @@ end
 
 function virtualfile:read()
    local str
-   str = js.run("localStorage." .. self.name .. ";")
-   js.run("alert(" .. str .. ");")
+   str = string.format("%q", js.run_string("localStorage." .. self.name .. ";"))
+   str = string.gsub(str , "\\n", '\n')
+   --js.run("alert(" .. str .. ");")
+   print(str)
    return str
 end
 
@@ -69,6 +72,7 @@ function game_load(self, name)
     h = virtualfile.create(name)
 	local f, err = loadstring(h:read());
 	if f then
+        print('loaded')
 		local i,r = f();
 		if r then
 			return nil, false
@@ -80,6 +84,7 @@ function game_load(self, name)
 		end
 		return i, r
 	end
+    print('error')
 	return nil, false
 end
 game.load = game_load
