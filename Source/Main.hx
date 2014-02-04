@@ -55,13 +55,13 @@ class Main {
             cog_div.style.backgroundImage = 'url(gamesource/' + ThemeParser.Instance().theme.get('cog.gfx') + ')';
 		
 		var styleSheet:CSSStyleSheet = cast(Browser.document.styleSheets[0], CSSStyleSheet);
-		styleSheet.addRule("#win a", "color: " + ThemeParser.Instance().theme.get('win.col.link') + ";");
-		styleSheet.addRule("#win", "color: " + ThemeParser.Instance().theme.get('win.col.fg') + ";");
-		styleSheet.addRule("#win a:hover", "color: " + ThemeParser.Instance().theme.get('win.col.alink') + ";");
+		styleSheet.insertRule("#win a { color: " + ThemeParser.Instance().theme.get('win.col.link') + "; }", 0);
+		styleSheet.insertRule("#win { color: " + ThemeParser.Instance().theme.get('win.col.fg') + "; }", 0);
+		styleSheet.insertRule("#win a:hover { color: " + ThemeParser.Instance().theme.get('win.col.alink') + "; }", 0);
 		
-		styleSheet.addRule("#inventory a", "color: " + ThemeParser.Instance().theme.get('inv.col.link') + ";");
-		styleSheet.addRule("#inventory", "color: " + ThemeParser.Instance().theme.get('inv.col.fg') + ";");
-		styleSheet.addRule("#inventory a:hover", "color: " + ThemeParser.Instance().theme.get('inv.col.alink') + ";");
+		styleSheet.insertRule("#inventory a { color: " + ThemeParser.Instance().theme.get('inv.col.link') + "; }", 0);
+		styleSheet.insertRule("#inventory { color: " + ThemeParser.Instance().theme.get('inv.col.fg') + "; }", 0);
+		styleSheet.insertRule("#inventory a:hover { color: " + ThemeParser.Instance().theme.get('inv.col.alink') + "; }", 0);
 	}
 	
     static function main() {

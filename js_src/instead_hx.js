@@ -94,12 +94,12 @@ Main.prototype = {
 		if(stead.ThemeParser.Instance().theme.exists("cog.gfx")) cog_div.style.backgroundImage = "url(gamesource/" + stead.ThemeParser.Instance().theme.get("cog.gfx") + ")";
 		var styleSheet;
 		styleSheet = js.Boot.__cast(window.document.styleSheets[0] , CSSStyleSheet);
-		styleSheet.addRule("#win a","color: " + stead.ThemeParser.Instance().theme.get("win.col.link") + ";");
-		styleSheet.addRule("#win","color: " + stead.ThemeParser.Instance().theme.get("win.col.fg") + ";");
-		styleSheet.addRule("#win a:hover","color: " + stead.ThemeParser.Instance().theme.get("win.col.alink") + ";");
-		styleSheet.addRule("#inventory a","color: " + stead.ThemeParser.Instance().theme.get("inv.col.link") + ";");
-		styleSheet.addRule("#inventory","color: " + stead.ThemeParser.Instance().theme.get("inv.col.fg") + ";");
-		styleSheet.addRule("#inventory a:hover","color: " + stead.ThemeParser.Instance().theme.get("inv.col.alink") + ";");
+		styleSheet.insertRule("#win a { color: " + stead.ThemeParser.Instance().theme.get("win.col.link") + "; }",0);
+		styleSheet.insertRule("#win { color: " + stead.ThemeParser.Instance().theme.get("win.col.fg") + "; }",0);
+		styleSheet.insertRule("#win a:hover { color: " + stead.ThemeParser.Instance().theme.get("win.col.alink") + "; }",0);
+		styleSheet.insertRule("#inventory a { color: " + stead.ThemeParser.Instance().theme.get("inv.col.link") + "; }",0);
+		styleSheet.insertRule("#inventory { color: " + stead.ThemeParser.Instance().theme.get("inv.col.fg") + "; }",0);
+		styleSheet.insertRule("#inventory a:hover { color: " + stead.ThemeParser.Instance().theme.get("inv.col.alink") + "; }",0);
 	}
 	,__class__: Main
 };
