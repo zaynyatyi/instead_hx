@@ -59,6 +59,7 @@ class SteadDispatcher
     
     private function OnLoadClick(e:Event):Void {
         ifaceCmd("\"load test_slot\"");
+        ifaceCmd("\"look\"");
     }
     
     private function OnSteadClick(e:Event):Void {

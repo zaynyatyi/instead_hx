@@ -512,6 +512,7 @@ stead.SteadDispatcher.prototype = {
 	}
 	,OnLoadClick: function(e) {
 		stead.SteadDispatcher.ifaceCmd("\"load test_slot\"");
+		stead.SteadDispatcher.ifaceCmd("\"look\"");
 	}
 	,OnSteadClick: function(e) {
 		if(!js.Boot.__instanceof(e.target,HTMLAnchorElement) && !js.Boot.__instanceof(e.target,HTMLSpanElement) && stead.SteadDispatcher.act) {
