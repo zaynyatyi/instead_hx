@@ -38,6 +38,7 @@ class SteadDispatcher
         interpreter.load("web.lua");
         interpreter.load("stead.lua");
         interpreter.load("gui.lua");
+		interpreter.load("web_store.lua");
         _dofile_path = "./" + ThemeParser.game_folder + "/";
         interpreter.load(_dofile_path + "main.lua");
         interpreter.call("game.ini(game)");
@@ -50,7 +51,7 @@ class SteadDispatcher
     }
 
     private function OnSteadClick(e:Event):Void {
-        if(!Std.is(e.target, AnchorElement) && !Std.is(e.target, SpanElement)) {
+        if(!Std.is(e.target, AnchorElement) && !Std.is(e.target, SpanElement) && act) {
             click("", 0, true);
             var i = 0;
         }

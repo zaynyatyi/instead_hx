@@ -366,6 +366,7 @@ stead.SteadDispatcher = function() {
 	stead.SteadDispatcher.interpreter.load("web.lua");
 	stead.SteadDispatcher.interpreter.load("stead.lua");
 	stead.SteadDispatcher.interpreter.load("gui.lua");
+	stead.SteadDispatcher.interpreter.load("web_store.lua");
 	stead.SteadDispatcher._dofile_path = "./" + stead.ThemeParser.game_folder + "/";
 	stead.SteadDispatcher.interpreter.load(stead.SteadDispatcher._dofile_path + "main.lua");
 	stead.SteadDispatcher.interpreter.call("game.ini(game)");
@@ -497,7 +498,7 @@ stead.SteadDispatcher.normalizeContent = function(input,field) {
 };
 stead.SteadDispatcher.prototype = {
 	OnSteadClick: function(e) {
-		if(!js.Boot.__instanceof(e.target,HTMLAnchorElement) && !js.Boot.__instanceof(e.target,HTMLSpanElement)) {
+		if(!js.Boot.__instanceof(e.target,HTMLAnchorElement) && !js.Boot.__instanceof(e.target,HTMLSpanElement) && stead.SteadDispatcher.act) {
 			stead.SteadDispatcher.click("",0,true);
 			var i = 0;
 		}
