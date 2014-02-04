@@ -7,6 +7,8 @@ import js.html.Element;
 import js.html.Event;
 import js.html.Image;
 import js.html.SpanElement;
+import js.html.Audio;
+import js.html.AudioElement;
 import js.JQuery;
 import js.Lib;
 
@@ -33,9 +35,12 @@ class SteadDispatcher
     private static var canvas:CanvasElement;
     private static var win:Element;
     private static var ui:UI = new UI();
+    private static var track:Audio = new Audio();
 
     public function new()
     {
+        track.autoplay = true;
+        track.loop = true;
         interpreter.load("web.lua");
         interpreter.load("stead.lua");
         interpreter.load("gui.lua");
@@ -205,6 +210,12 @@ class SteadDispatcher
     private static function playMusic(path:String)
     {
         trace(path);
+        trace(track.src);
+        trace(track.src.indexOf(path));
+        if(track.src.indexOf(path) == -1) {
+            track.src = _dofile_path + path;
+            var i = 1;
+        }
     }
 
     private static function ifaceCmd(command:String)

@@ -387,6 +387,8 @@ stead.UI.prototype = {
 	__class__: stead.UI
 };
 stead.SteadDispatcher = function() {
+	stead.SteadDispatcher.track.autoplay = true;
+	stead.SteadDispatcher.track.loop = true;
 	stead.SteadDispatcher.interpreter.load("web.lua");
 	stead.SteadDispatcher.interpreter.load("stead.lua");
 	stead.SteadDispatcher.interpreter.load("gui.lua");
@@ -498,6 +500,12 @@ stead.SteadDispatcher.copyAccross = function(e) {
 };
 stead.SteadDispatcher.playMusic = function(path) {
 	console.log(path);
+	console.log(stead.SteadDispatcher.track.src);
+	console.log(stead.SteadDispatcher.track.src.indexOf(path));
+	if(stead.SteadDispatcher.track.src.indexOf(path) == -1) {
+		stead.SteadDispatcher.track.src = stead.SteadDispatcher._dofile_path + path;
+		var i = 1;
+	}
 };
 stead.SteadDispatcher.ifaceCmd = function(command) {
 	var retVal = stead.SteadDispatcher.interpreter.call("iface.cmd(iface, " + command + ")");
@@ -599,6 +607,7 @@ stead.SteadDispatcher.interpreter = new Interpreter();
 stead.SteadDispatcher.act = false;
 stead.SteadDispatcher.thing = "";
 stead.SteadDispatcher.ui = new stead.UI();
+stead.SteadDispatcher.track = new Audio();
 stead.ThemeParser.game_folder = "gamesource";
 stead.ThemeParser.horizontal_inventory = true;
 stead.ThemeParser.left_inventory = false;
