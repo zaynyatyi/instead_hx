@@ -38,11 +38,7 @@ end
 
 function virtualfile:read()
    local str
-   --str = string.format("%q", js.run_string("localStorage." .. self.name .. ";"))
-   --str = string.gsub(str , "\\n", '\n')
-   --js.run("alert(" .. str .. ");")
    str = string.gsub(js.run_string("localStorage." .. self.name .. ";"), "\\n", "\n")
-   print(str)
    return str
 end
 

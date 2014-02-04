@@ -66,6 +66,8 @@ Main.prototype = {
 		var win_div = window.document.getElementById("win");
 		var inv_div = window.document.getElementById("inventory");
 		var cog_div = window.document.getElementById("cog");
+		var save_div = window.document.getElementById("save");
+		var load_div = window.document.getElementById("load");
 		if(stead.ThemeParser.Instance().theme.exists("scr.gfx.bg")) stead_div.style.backgroundImage = "url(gamesource/" + stead.ThemeParser.Instance().theme.get("scr.gfx.bg") + ")";
 		if(stead.ThemeParser.Instance().theme.exists("scr.w") && stead.ThemeParser.Instance().theme.exists("scr.h")) {
 			stead_div.style.width = stead.ThemeParser.Instance().theme.get("scr.w") + "px";
@@ -92,6 +94,20 @@ Main.prototype = {
 			cog_div.style.top = stead.ThemeParser.Instance().theme.get("cog.y") + "px";
 		}
 		if(stead.ThemeParser.Instance().theme.exists("cog.gfx")) cog_div.style.backgroundImage = "url(gamesource/" + stead.ThemeParser.Instance().theme.get("cog.gfx") + ")";
+		if(stead.ThemeParser.Instance().theme.exists("save.x") && stead.ThemeParser.Instance().theme.exists("save.y")) {
+			save_div.style.width = stead.ThemeParser.Instance().theme.get("save.w") + "px";
+			save_div.style.height = stead.ThemeParser.Instance().theme.get("save.h") + "px";
+			save_div.style.left = stead.ThemeParser.Instance().theme.get("save.x") + "px";
+			save_div.style.top = stead.ThemeParser.Instance().theme.get("save.y") + "px";
+		}
+		if(stead.ThemeParser.Instance().theme.exists("save.gfx")) save_div.style.backgroundImage = "url(gamesource/" + stead.ThemeParser.Instance().theme.get("save.gfx") + ")";
+		if(stead.ThemeParser.Instance().theme.exists("load.x") && stead.ThemeParser.Instance().theme.exists("load.y")) {
+			load_div.style.width = stead.ThemeParser.Instance().theme.get("load.w") + "px";
+			load_div.style.height = stead.ThemeParser.Instance().theme.get("load.h") + "px";
+			load_div.style.left = stead.ThemeParser.Instance().theme.get("load.x") + "px";
+			load_div.style.top = stead.ThemeParser.Instance().theme.get("load.y") + "px";
+		}
+		if(stead.ThemeParser.Instance().theme.exists("load.gfx")) load_div.style.backgroundImage = "url(gamesource/" + stead.ThemeParser.Instance().theme.get("load.gfx") + ")";
 		var styleSheet;
 		styleSheet = js.Boot.__cast(window.document.styleSheets[0] , CSSStyleSheet);
 		styleSheet.insertRule("#win a { color: " + stead.ThemeParser.Instance().theme.get("win.col.link") + "; }",0);
@@ -488,7 +504,7 @@ stead.SteadDispatcher.ifaceCmd = function(command) {
 	if(retVal != null && retVal[0] != null) {
 		var cmdAnswer = Std.string(retVal[0]);
 		var rc = retVal[1];
-		if(cmdAnswer != "" && rc) stead.SteadDispatcher.setContent("text",cmdAnswer,stead.EField.Text);
+		if(cmdAnswer != "") stead.SteadDispatcher.setContent("text",cmdAnswer,stead.EField.Text);
 	}
 };
 stead.SteadDispatcher.setContent = function(id,content,field) {
@@ -508,11 +524,11 @@ stead.SteadDispatcher.normalizeContent = function(input,field) {
 };
 stead.SteadDispatcher.prototype = {
 	OnSaveClick: function(e) {
-		stead.SteadDispatcher.ifaceCmd("\"save test_slot\"");
+		stead.SteadDispatcher.ifaceCmd("\"save " + "backup_01" + "\"");
 	}
 	,OnLoadClick: function(e) {
-		stead.SteadDispatcher.ifaceCmd("\"load test_slot\"");
-		stead.SteadDispatcher.ifaceCmd("\"look\"");
+		stead.SteadDispatcher.ifaceCmd("\"load " + "backup_01" + "\"");
+		stead.SteadDispatcher.refreshInterface();
 	}
 	,OnSteadClick: function(e) {
 		if(!js.Boot.__instanceof(e.target,HTMLAnchorElement) && !js.Boot.__instanceof(e.target,HTMLSpanElement) && stead.SteadDispatcher.act) {
@@ -577,6 +593,7 @@ var Class = { __name__ : ["Class"]};
 var Enum = { };
 var q = window.jQuery;
 js.JQuery = q;
+Main.SlotName = "backup_01";
 stead.SteadDispatcher._dofile_path = "";
 stead.SteadDispatcher.interpreter = new Interpreter();
 stead.SteadDispatcher.act = false;

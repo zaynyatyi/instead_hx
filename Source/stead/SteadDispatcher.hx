@@ -54,12 +54,13 @@ class SteadDispatcher
     }
 
     private function OnSaveClick(e:Event):Void {
-        ifaceCmd("\"save test_slot\"");
+        ifaceCmd("\"save " + Main.SlotName + "\"");
     }
     
     private function OnLoadClick(e:Event):Void {
-        ifaceCmd("\"load test_slot\"");
-        ifaceCmd("\"look\"");
+        ifaceCmd("\"load " + Main.SlotName + "\"");
+        //ifaceCmd("\"\"");
+        refreshInterface();
     }
     
     private function OnSteadClick(e:Event):Void {
@@ -213,7 +214,7 @@ class SteadDispatcher
         {
             var cmdAnswer:String = Std.string(retVal[0]);
             var rc:Bool = retVal[1];
-            if (cmdAnswer != "" && rc)
+            if (cmdAnswer != "")
             {
                 setContent("text", cmdAnswer, Text);
             }
