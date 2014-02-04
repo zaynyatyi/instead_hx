@@ -32,13 +32,14 @@ class SteadDispatcher
     private static var thing:String = "";
     private static var canvas:CanvasElement;
     private static var win:Element;
+    private static var ui:UI = new UI();
 
     public function new()
     {
         interpreter.load("web.lua");
         interpreter.load("stead.lua");
         interpreter.load("gui.lua");
-		interpreter.load("web_store.lua");
+        interpreter.load("web_store.lua");
         _dofile_path = "./" + ThemeParser.game_folder + "/";
         interpreter.load(_dofile_path + "main.lua");
         interpreter.call("game.ini(game)");
@@ -47,9 +48,19 @@ class SteadDispatcher
         win = Browser.document.getElementById('win');
         var stead_div:Element = Browser.document.getElementById("stead");
         stead_div.onclick = OnSteadClick;
+        ui.saveButton.onclick = OnSaveClick;
+        ui.loadButton.onclick = OnLoadClick;
         look();
     }
 
+    private function OnSaveClick(e:Event):Void {
+        ifaceCmd("\"save test_slot\"");
+    }
+    
+    private function OnLoadClick(e:Event):Void {
+        ifaceCmd("\"load test_slot\"");
+    }
+    
     private function OnSteadClick(e:Event):Void {
         if(!Std.is(e.target, AnchorElement) && !Std.is(e.target, SpanElement) && act) {
             click("", 0, true);
@@ -197,7 +208,7 @@ class SteadDispatcher
     private static function ifaceCmd(command:String)
     {
         var retVal:Array<Dynamic> = interpreter.call("iface.cmd(iface, " + command + ")");
-        if (retVal[0] != null)
+        if (retVal != null && retVal[0] != null)
         {
             var cmdAnswer:String = Std.string(retVal[0]);
             var rc:Bool = retVal[1];

@@ -362,6 +362,14 @@ stead.EField.Title.__enum__ = stead.EField;
 stead.EField.Inv = ["Inv",3];
 stead.EField.Inv.toString = $estr;
 stead.EField.Inv.__enum__ = stead.EField;
+stead.UI = function() {
+	this.saveButton = window.document.getElementById("save");
+	this.loadButton = window.document.getElementById("load");
+};
+stead.UI.__name__ = true;
+stead.UI.prototype = {
+	__class__: stead.UI
+};
 stead.SteadDispatcher = function() {
 	stead.SteadDispatcher.interpreter.load("web.lua");
 	stead.SteadDispatcher.interpreter.load("stead.lua");
@@ -374,6 +382,8 @@ stead.SteadDispatcher = function() {
 	stead.SteadDispatcher.win = window.document.getElementById("win");
 	var stead_div = window.document.getElementById("stead");
 	stead_div.onclick = $bind(this,this.OnSteadClick);
+	stead.SteadDispatcher.ui.saveButton.onclick = $bind(this,this.OnSaveClick);
+	stead.SteadDispatcher.ui.loadButton.onclick = $bind(this,this.OnLoadClick);
 	stead.SteadDispatcher.look();
 };
 stead.SteadDispatcher.__name__ = true;
@@ -475,7 +485,7 @@ stead.SteadDispatcher.playMusic = function(path) {
 };
 stead.SteadDispatcher.ifaceCmd = function(command) {
 	var retVal = stead.SteadDispatcher.interpreter.call("iface.cmd(iface, " + command + ")");
-	if(retVal[0] != null) {
+	if(retVal != null && retVal[0] != null) {
 		var cmdAnswer = Std.string(retVal[0]);
 		var rc = retVal[1];
 		if(cmdAnswer != "" && rc) stead.SteadDispatcher.setContent("text",cmdAnswer,stead.EField.Text);
@@ -497,7 +507,13 @@ stead.SteadDispatcher.normalizeContent = function(input,field) {
 	return output;
 };
 stead.SteadDispatcher.prototype = {
-	OnSteadClick: function(e) {
+	OnSaveClick: function(e) {
+		stead.SteadDispatcher.ifaceCmd("\"save test_slot\"");
+	}
+	,OnLoadClick: function(e) {
+		stead.SteadDispatcher.ifaceCmd("\"load test_slot\"");
+	}
+	,OnSteadClick: function(e) {
 		if(!js.Boot.__instanceof(e.target,HTMLAnchorElement) && !js.Boot.__instanceof(e.target,HTMLSpanElement) && stead.SteadDispatcher.act) {
 			stead.SteadDispatcher.click("",0,true);
 			var i = 0;
@@ -564,6 +580,7 @@ stead.SteadDispatcher._dofile_path = "";
 stead.SteadDispatcher.interpreter = new Interpreter();
 stead.SteadDispatcher.act = false;
 stead.SteadDispatcher.thing = "";
+stead.SteadDispatcher.ui = new stead.UI();
 stead.ThemeParser.game_folder = "gamesource";
 stead.ThemeParser.horizontal_inventory = true;
 stead.ThemeParser.left_inventory = false;
