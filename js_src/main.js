@@ -15,3 +15,8 @@ Interpreter.prototype.call = function(command) {
 Interpreter.prototype.load = function(path) {
     RunLuaFromPath(path);
 }
+Interpreter.prototype.clear = function() {
+    Lua.destroy();
+    Lua.initialize();
+    Glue_init();
+}

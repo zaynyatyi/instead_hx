@@ -43,6 +43,18 @@ class SteadDispatcher
         track.loop = true;
         track.muted = MenuDispatcher.Instance().muted;
         
+        canvas = cast Browser.document.getElementById("canvas");
+        win = Browser.document.getElementById('win');
+        var stead_div:Element = Browser.document.getElementById("stead");
+        stead_div.onclick = OnSteadClick;
+        MenuDispatcher.Instance().save.onclick = OnSaveClick;
+        MenuDispatcher.Instance().load.onclick = OnLoadClick;
+        MenuDispatcher.Instance().reset.onclick = function (e:Event) { interpreter.clear(); InitGame(); MenuDispatcher.Instance().HideUp(); };
+        
+        InitGame();
+    }
+
+    private function InitGame() {
         interpreter.load("web.lua");
         interpreter.load("stead.lua");
         interpreter.load("gui.lua");
@@ -50,17 +62,10 @@ class SteadDispatcher
         _dofile_path = "./" + ThemeParser.game_folder + "/";
         interpreter.load(_dofile_path + "main.lua");
         interpreter.call("game.ini(game)");
-
-        canvas = cast Browser.document.getElementById("canvas");
-        win = Browser.document.getElementById('win');
-        var stead_div:Element = Browser.document.getElementById("stead");
-        stead_div.onclick = OnSteadClick;
-        MenuDispatcher.Instance().save.onclick = OnSaveClick;
-        MenuDispatcher.Instance().load.onclick = OnLoadClick;
-        MenuDispatcher.Instance().reset.onclick = function (e:Event) { MenuDispatcher.Instance().HideUp(); };
+        
         look();
     }
-
+    
     private function OnSaveClick(e:Event):Void {
         ifaceCmd("\"save " + Main.SlotName + "\"");
         MenuDispatcher.Instance().HideUp();

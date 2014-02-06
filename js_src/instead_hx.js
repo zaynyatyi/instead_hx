@@ -417,16 +417,10 @@ stead.EField.Inv = ["Inv",3];
 stead.EField.Inv.toString = $estr;
 stead.EField.Inv.__enum__ = stead.EField;
 stead.SteadDispatcher = function() {
+	var _g = this;
 	stead.SteadDispatcher.track.autoplay = true;
 	stead.SteadDispatcher.track.loop = true;
 	stead.SteadDispatcher.track.muted = stead.MenuDispatcher.Instance().muted;
-	stead.SteadDispatcher.interpreter.load("web.lua");
-	stead.SteadDispatcher.interpreter.load("stead.lua");
-	stead.SteadDispatcher.interpreter.load("gui.lua");
-	stead.SteadDispatcher.interpreter.load("web_store.lua");
-	stead.SteadDispatcher._dofile_path = "./" + stead.ThemeParser.game_folder + "/";
-	stead.SteadDispatcher.interpreter.load(stead.SteadDispatcher._dofile_path + "main.lua");
-	stead.SteadDispatcher.interpreter.call("game.ini(game)");
 	stead.SteadDispatcher.canvas = window.document.getElementById("canvas");
 	stead.SteadDispatcher.win = window.document.getElementById("win");
 	var stead_div = window.document.getElementById("stead");
@@ -434,9 +428,11 @@ stead.SteadDispatcher = function() {
 	stead.MenuDispatcher.Instance().save.onclick = $bind(this,this.OnSaveClick);
 	stead.MenuDispatcher.Instance().load.onclick = $bind(this,this.OnLoadClick);
 	stead.MenuDispatcher.Instance().reset.onclick = function(e) {
+		stead.SteadDispatcher.interpreter.clear();
+		_g.InitGame();
 		stead.MenuDispatcher.Instance().HideUp();
 	};
-	stead.SteadDispatcher.look();
+	this.InitGame();
 };
 stead.SteadDispatcher.__name__ = true;
 stead.SteadDispatcher.look = function() {
@@ -566,7 +562,17 @@ stead.SteadDispatcher.normalizeContent = function(input,field) {
 	return output;
 };
 stead.SteadDispatcher.prototype = {
-	OnSaveClick: function(e) {
+	InitGame: function() {
+		stead.SteadDispatcher.interpreter.load("web.lua");
+		stead.SteadDispatcher.interpreter.load("stead.lua");
+		stead.SteadDispatcher.interpreter.load("gui.lua");
+		stead.SteadDispatcher.interpreter.load("web_store.lua");
+		stead.SteadDispatcher._dofile_path = "./" + stead.ThemeParser.game_folder + "/";
+		stead.SteadDispatcher.interpreter.load(stead.SteadDispatcher._dofile_path + "main.lua");
+		stead.SteadDispatcher.interpreter.call("game.ini(game)");
+		stead.SteadDispatcher.look();
+	}
+	,OnSaveClick: function(e) {
 		stead.SteadDispatcher.ifaceCmd("\"save " + "backup_01" + "\"");
 		stead.MenuDispatcher.Instance().HideUp();
 	}
