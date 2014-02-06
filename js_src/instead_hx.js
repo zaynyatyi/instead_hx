@@ -51,6 +51,7 @@ List.prototype = {
 	,__class__: List
 };
 var Main = function() {
+	if(js.Browser.getLocalStorage().getItem("mute") == "true") stead.MenuDispatcher.Instance().muted = true; else stead.MenuDispatcher.Instance().muted = false;
 	this.stead_dispatcher = new stead.SteadDispatcher();
 	stead.UseIndicator.Instance().PowerOff();
 	this.ApplyTheme();
@@ -66,8 +67,8 @@ Main.prototype = {
 		var win_div = window.document.getElementById("win");
 		var inv_div = window.document.getElementById("inventory");
 		var cog_div = window.document.getElementById("cog");
-		var save_div = window.document.getElementById("save");
-		var load_div = window.document.getElementById("load");
+		var menu_button = window.document.getElementById("menu_button");
+		var menu_image = window.document.getElementById("menu_image");
 		if(stead.ThemeParser.Instance().theme.exists("scr.gfx.bg")) stead_div.style.backgroundImage = "url(gamesource/" + stead.ThemeParser.Instance().theme.get("scr.gfx.bg") + ")";
 		if(stead.ThemeParser.Instance().theme.exists("scr.w") && stead.ThemeParser.Instance().theme.exists("scr.h")) {
 			stead_div.style.width = stead.ThemeParser.Instance().theme.get("scr.w") + "px";
@@ -94,20 +95,9 @@ Main.prototype = {
 			cog_div.style.top = stead.ThemeParser.Instance().theme.get("cog.y") + "px";
 		}
 		if(stead.ThemeParser.Instance().theme.exists("cog.gfx")) cog_div.style.backgroundImage = "url(gamesource/" + stead.ThemeParser.Instance().theme.get("cog.gfx") + ")";
-		if(stead.ThemeParser.Instance().theme.exists("save.x") && stead.ThemeParser.Instance().theme.exists("save.y")) {
-			save_div.style.width = stead.ThemeParser.Instance().theme.get("save.w") + "px";
-			save_div.style.height = stead.ThemeParser.Instance().theme.get("save.h") + "px";
-			save_div.style.left = stead.ThemeParser.Instance().theme.get("save.x") + "px";
-			save_div.style.top = stead.ThemeParser.Instance().theme.get("save.y") + "px";
-		}
-		if(stead.ThemeParser.Instance().theme.exists("save.gfx")) save_div.style.backgroundImage = "url(gamesource/" + stead.ThemeParser.Instance().theme.get("save.gfx") + ")";
-		if(stead.ThemeParser.Instance().theme.exists("load.x") && stead.ThemeParser.Instance().theme.exists("load.y")) {
-			load_div.style.width = stead.ThemeParser.Instance().theme.get("load.w") + "px";
-			load_div.style.height = stead.ThemeParser.Instance().theme.get("load.h") + "px";
-			load_div.style.left = stead.ThemeParser.Instance().theme.get("load.x") + "px";
-			load_div.style.top = stead.ThemeParser.Instance().theme.get("load.y") + "px";
-		}
-		if(stead.ThemeParser.Instance().theme.exists("load.gfx")) load_div.style.backgroundImage = "url(gamesource/" + stead.ThemeParser.Instance().theme.get("load.gfx") + ")";
+		menu_button.style.left = stead.ThemeParser.Instance().theme.get("menu.button.x") + "px";
+		menu_button.style.top = stead.ThemeParser.Instance().theme.get("menu.button.y") + "px";
+		if(stead.ThemeParser.Instance().theme.exists("menu.gfx.button")) menu_image.src = "gamesource/" + stead.ThemeParser.Instance().theme.get("menu.gfx.button"); else menu_image.src = "gamesource/theme/menu.png";
 		var styleSheet;
 		styleSheet = js.Boot.__cast(window.document.styleSheets[0] , CSSStyleSheet);
 		styleSheet.insertRule("#win a { color: " + stead.ThemeParser.Instance().theme.get("win.col.link") + "; }",0);
@@ -116,6 +106,9 @@ Main.prototype = {
 		styleSheet.insertRule("#inventory a { color: " + stead.ThemeParser.Instance().theme.get("inv.col.link") + "; }",0);
 		styleSheet.insertRule("#inventory { color: " + stead.ThemeParser.Instance().theme.get("inv.col.fg") + "; }",0);
 		styleSheet.insertRule("#inventory a:hover { color: " + stead.ThemeParser.Instance().theme.get("inv.col.alink") + "; }",0);
+		menu_button.onclick = function(e) {
+			stead.MenuDispatcher.Instance().ShowUp();
+		};
 	}
 	,__class__: Main
 };
@@ -354,6 +347,15 @@ js.Boot.__cast = function(o,t) {
 };
 js.Browser = function() { };
 js.Browser.__name__ = true;
+js.Browser.getLocalStorage = function() {
+	try {
+		var s = window.localStorage;
+		s.getItem("");
+		return s;
+	} catch( e ) {
+		return null;
+	}
+};
 js.Browser.createXMLHttpRequest = function() {
 	if(typeof XMLHttpRequest != "undefined") return new XMLHttpRequest();
 	if(typeof ActiveXObject != "undefined") return new ActiveXObject("Microsoft.XMLHTTP");
@@ -365,6 +367,42 @@ js.Lib.alert = function(v) {
 	alert(js.Boot.__string_rec(v,""));
 };
 var stead = {};
+stead.MenuDispatcher = function() {
+	var _g = this;
+	this.visible = false;
+	this.muted = false;
+	this.save = window.document.getElementById("save");
+	this.load = window.document.getElementById("load");
+	this.reset = window.document.getElementById("reset");
+	this.mute = window.document.getElementById("mute");
+	this.back = window.document.getElementById("back");
+	this.self = window.document.getElementById("menu");
+	this.back.onclick = function(e) {
+		_g.self.style.visibility = "hidden";
+		_g.visible = false;
+	};
+	this.mute.onclick = function(e) {
+		js.Browser.getLocalStorage().setItem("mute",Std.string(!_g.muted));
+		_g.muted = !_g.muted;
+		stead.SteadDispatcher.track.muted = _g.muted;
+	};
+};
+stead.MenuDispatcher.__name__ = true;
+stead.MenuDispatcher.Instance = function() {
+	if(stead.MenuDispatcher.instance == null) stead.MenuDispatcher.instance = new stead.MenuDispatcher();
+	return stead.MenuDispatcher.instance;
+};
+stead.MenuDispatcher.prototype = {
+	ShowUp: function() {
+		this.self.style.visibility = "visible";
+		this.visible = true;
+	}
+	,HideUp: function() {
+		this.self.style.visibility = "hidden";
+		this.visible = false;
+	}
+	,__class__: stead.MenuDispatcher
+};
 stead.EField = { __ename__ : true, __constructs__ : ["Text","Ways","Title","Inv"] };
 stead.EField.Text = ["Text",0];
 stead.EField.Text.toString = $estr;
@@ -378,17 +416,10 @@ stead.EField.Title.__enum__ = stead.EField;
 stead.EField.Inv = ["Inv",3];
 stead.EField.Inv.toString = $estr;
 stead.EField.Inv.__enum__ = stead.EField;
-stead.UI = function() {
-	this.saveButton = window.document.getElementById("save");
-	this.loadButton = window.document.getElementById("load");
-};
-stead.UI.__name__ = true;
-stead.UI.prototype = {
-	__class__: stead.UI
-};
 stead.SteadDispatcher = function() {
 	stead.SteadDispatcher.track.autoplay = true;
 	stead.SteadDispatcher.track.loop = true;
+	stead.SteadDispatcher.track.muted = stead.MenuDispatcher.Instance().muted;
 	stead.SteadDispatcher.interpreter.load("web.lua");
 	stead.SteadDispatcher.interpreter.load("stead.lua");
 	stead.SteadDispatcher.interpreter.load("gui.lua");
@@ -400,8 +431,11 @@ stead.SteadDispatcher = function() {
 	stead.SteadDispatcher.win = window.document.getElementById("win");
 	var stead_div = window.document.getElementById("stead");
 	stead_div.onclick = $bind(this,this.OnSteadClick);
-	stead.SteadDispatcher.ui.saveButton.onclick = $bind(this,this.OnSaveClick);
-	stead.SteadDispatcher.ui.loadButton.onclick = $bind(this,this.OnLoadClick);
+	stead.MenuDispatcher.Instance().save.onclick = $bind(this,this.OnSaveClick);
+	stead.MenuDispatcher.Instance().load.onclick = $bind(this,this.OnLoadClick);
+	stead.MenuDispatcher.Instance().reset.onclick = function(e) {
+		stead.MenuDispatcher.Instance().HideUp();
+	};
 	stead.SteadDispatcher.look();
 };
 stead.SteadDispatcher.__name__ = true;
@@ -419,6 +453,7 @@ stead.SteadDispatcher.refreshInterface = function() {
 };
 stead.SteadDispatcher.click = $hx_exports.stead.SteadDispatcher.click = function(ref,field,onstead) {
 	if(onstead == null) onstead = false;
+	if(stead.MenuDispatcher.Instance().visible) return;
 	if(!onstead && (stead.SteadDispatcher.act || field == stead.EField.Inv[1])) {
 		ref = HxOverrides.substr(ref,1,null);
 		if(HxOverrides.substr(ref,0,3) == "act") {
@@ -533,10 +568,12 @@ stead.SteadDispatcher.normalizeContent = function(input,field) {
 stead.SteadDispatcher.prototype = {
 	OnSaveClick: function(e) {
 		stead.SteadDispatcher.ifaceCmd("\"save " + "backup_01" + "\"");
+		stead.MenuDispatcher.Instance().HideUp();
 	}
 	,OnLoadClick: function(e) {
 		stead.SteadDispatcher.ifaceCmd("\"load " + "backup_01" + "\"");
 		stead.SteadDispatcher.refreshInterface();
+		stead.MenuDispatcher.Instance().HideUp();
 	}
 	,OnSteadClick: function(e) {
 		if(!js.Boot.__instanceof(e.target,HTMLAnchorElement) && !js.Boot.__instanceof(e.target,HTMLSpanElement) && stead.SteadDispatcher.act) {
@@ -602,11 +639,11 @@ var Enum = { };
 var q = window.jQuery;
 js.JQuery = q;
 Main.SlotName = "backup_01";
+Main.DEFAULT_MENU_BTN = "gamesource/theme/menu.png";
 stead.SteadDispatcher._dofile_path = "";
 stead.SteadDispatcher.interpreter = new Interpreter();
 stead.SteadDispatcher.act = false;
 stead.SteadDispatcher.thing = "";
-stead.SteadDispatcher.ui = new stead.UI();
 stead.SteadDispatcher.track = new Audio();
 stead.ThemeParser.game_folder = "gamesource";
 stead.ThemeParser.horizontal_inventory = true;

@@ -20,7 +20,7 @@ pre {
     white-space: nowrap;
     word-spacing: 10px;
 }
-#stead, #win, #inventory, #cog, #save, #load {
+#stead, #win, #inventory, #cog, #menu_button {
 	position: absolute;
 }
 #win, #inventory {
@@ -32,9 +32,47 @@ pre {
 #text {
 	text-align: justify;
 }
+#menu_button {
+    cursor: pointer; cursor: hand;
+}
+</style>
+<style type="text/css">
+#menu {
+    width: 200px;
+    position: absolute;
+    z-index: 9000;
+    top: 200px;
+    left: 300px;
+    visibility: hidden;
+}
+#menu div {
+    height: 24px;
+    text-align: center;
+    selectable: false;
+    background-color: #333333;
+    border: 1px solid white;
+}
+#menu div a {
+    color: white;
+    text-decoration: none;
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+#menu div a:hover {
+    color: white;
+    background-color: #555555;
+}
 </style>
 </head>
 <body>
+<div id="menu">
+    <div id="save"><a href="#">Save</a></div>
+    <div id="load"><a href="#">Load</a></div>
+    <div id="reset"><a href="#">Reset</a></div>
+    <div id="mute"><a href="#">Mute</a></div>
+    <div id="back"><a href="#">Return</a></div>
+</div>
 <div id="stead">
 	<div id="win">
 		<div id="title"></div>
@@ -46,9 +84,9 @@ pre {
 	</div>
     <div id="inventory"></div>
 	<div id="cog"></div>
-    <div id="save"></div>
-    <div id="load"></div>
+    <div id="menu_button"><img id="menu_image"></img></div>
 </div>
+
 <script type="text/javascript" src="instead_hx.js"></script>
 </body>
 </html>

@@ -1,11 +1,14 @@
 package;
 
+import js.html.Event;
 import stead.SteadDispatcher;
 import stead.ThemeParser;
 import stead.UseIndicator;
+import stead.MenuDispatcher;
 import js.Browser;
 import js.html.CSSStyleSheet;
 import js.html.Element;
+import js.html.ImageElement;
 import js.JQuery;
 
 class Main {
@@ -13,8 +16,10 @@ class Main {
     private var stead_dispatcher:SteadDispatcher;
     private var theme_parser:ThemeParser;
     public static inline var SlotName:String = "backup_01";
+    private static inline var DEFAULT_MENU_BTN:String = "gamesource/theme/menu.png";
 
     public function new () {
+        MenuDispatcher.Instance().muted = Browser.getLocalStorage().getItem('mute') == 'true' ? true : false;
         stead_dispatcher = new SteadDispatcher();
 		UseIndicator.Instance().PowerOff();
 		ApplyTheme();
@@ -26,8 +31,8 @@ class Main {
 		var win_div:Element = Browser.document.getElementById('win');
 		var inv_div:Element = Browser.document.getElementById('inventory');
 		var cog_div:Element = Browser.document.getElementById('cog');
-		var save_div:Element = Browser.document.getElementById('save');
-		var load_div:Element = Browser.document.getElementById('load');
+		var menu_button:Element = Browser.document.getElementById('menu_button');
+		var menu_image:ImageElement = cast Browser.document.getElementById('menu_image');
         if(ThemeParser.Instance().theme.exists('scr.gfx.bg'))
             stead_div.style.backgroundImage = 'url(gamesource/'+ThemeParser.Instance().theme.get('scr.gfx.bg')+')';
         if(ThemeParser.Instance().theme.exists('scr.w') && ThemeParser.Instance().theme.exists('scr.h')) {
@@ -57,24 +62,13 @@ class Main {
 		if(ThemeParser.Instance().theme.exists('cog.gfx'))
             cog_div.style.backgroundImage = 'url(gamesource/' + ThemeParser.Instance().theme.get('cog.gfx') + ')';
 
-		if (ThemeParser.Instance().theme.exists('save.x') && ThemeParser.Instance().theme.exists('save.y')) {
-			save_div.style.width = ThemeParser.Instance().theme.get('save.w') + 'px';
-            save_div.style.height = ThemeParser.Instance().theme.get('save.h') + 'px';
-            save_div.style.left = ThemeParser.Instance().theme.get('save.x') + 'px';
-			save_div.style.top = ThemeParser.Instance().theme.get('save.y') + 'px';
-		}
-		if(ThemeParser.Instance().theme.exists('save.gfx'))
-            save_div.style.backgroundImage = 'url(gamesource/' + ThemeParser.Instance().theme.get('save.gfx') + ')';
-
-		if (ThemeParser.Instance().theme.exists('load.x') && ThemeParser.Instance().theme.exists('load.y')) {
-			load_div.style.width = ThemeParser.Instance().theme.get('load.w') + 'px';
-            load_div.style.height = ThemeParser.Instance().theme.get('load.h') + 'px';
-            load_div.style.left = ThemeParser.Instance().theme.get('load.x') + 'px';
-			load_div.style.top = ThemeParser.Instance().theme.get('load.y') + 'px';
-		}
-		if(ThemeParser.Instance().theme.exists('load.gfx'))
-            load_div.style.backgroundImage = 'url(gamesource/' + ThemeParser.Instance().theme.get('load.gfx') + ')';
-
+        menu_button.style.left = ThemeParser.Instance().theme.get('menu.button.x') + 'px';
+        menu_button.style.top = ThemeParser.Instance().theme.get('menu.button.y') + 'px';
+        if (ThemeParser.Instance().theme.exists('menu.gfx.button')) {
+            menu_image.src = 'gamesource/' + ThemeParser.Instance().theme.get('menu.gfx.button');
+        }else {
+            menu_image.src = DEFAULT_MENU_BTN;
+        }
 		
 		var styleSheet:CSSStyleSheet = cast(Browser.document.styleSheets[0], CSSStyleSheet);
 		styleSheet.insertRule("#win a { color: " + ThemeParser.Instance().theme.get('win.col.link') + "; }", 0);
@@ -84,6 +78,9 @@ class Main {
 		styleSheet.insertRule("#inventory a { color: " + ThemeParser.Instance().theme.get('inv.col.link') + "; }", 0);
 		styleSheet.insertRule("#inventory { color: " + ThemeParser.Instance().theme.get('inv.col.fg') + "; }", 0);
 		styleSheet.insertRule("#inventory a:hover { color: " + ThemeParser.Instance().theme.get('inv.col.alink') + "; }", 0);
+        
+        menu_button.onclick = function (e:Event) { MenuDispatcher.Instance().ShowUp(); };
+        
 	}
 	
     static function main() {

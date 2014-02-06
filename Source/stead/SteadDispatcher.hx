@@ -34,13 +34,15 @@ class SteadDispatcher
     private static var thing:String = "";
     private static var canvas:CanvasElement;
     private static var win:Element;
-    private static var ui:UI = new UI();
-    private static var track:Audio = new Audio();
+    //private static var ui:UI = new UI();
+    public static var track:Audio = new Audio();
 
     public function new()
     {
         track.autoplay = true;
         track.loop = true;
+        track.muted = MenuDispatcher.Instance().muted;
+        
         interpreter.load("web.lua");
         interpreter.load("stead.lua");
         interpreter.load("gui.lua");
@@ -53,19 +55,21 @@ class SteadDispatcher
         win = Browser.document.getElementById('win');
         var stead_div:Element = Browser.document.getElementById("stead");
         stead_div.onclick = OnSteadClick;
-        ui.saveButton.onclick = OnSaveClick;
-        ui.loadButton.onclick = OnLoadClick;
+        MenuDispatcher.Instance().save.onclick = OnSaveClick;
+        MenuDispatcher.Instance().load.onclick = OnLoadClick;
+        MenuDispatcher.Instance().reset.onclick = function (e:Event) { MenuDispatcher.Instance().HideUp(); };
         look();
     }
 
     private function OnSaveClick(e:Event):Void {
         ifaceCmd("\"save " + Main.SlotName + "\"");
+        MenuDispatcher.Instance().HideUp();
     }
     
     private function OnLoadClick(e:Event):Void {
         ifaceCmd("\"load " + Main.SlotName + "\"");
-        //ifaceCmd("\"\"");
         refreshInterface();
+        MenuDispatcher.Instance().HideUp();
     }
     
     private function OnSteadClick(e:Event):Void {
@@ -75,14 +79,12 @@ class SteadDispatcher
         }
     }
 
-    public static function look()
-    {
+    public static function look() {
         ifaceCmd("\"look\"");
         refreshInterface();
     }
 
-    private static function refreshInterface()
-    {
+    private static function refreshInterface() {
         getTitle();
         getWays();
         getInv();
@@ -91,8 +93,8 @@ class SteadDispatcher
         win.scrollTop = 0;
     }
 
-    @:expose public static function click(ref:String, field:Int, onstead:Bool = false):Void
-    {
+    @:expose public static function click(ref:String, field:Int, onstead:Bool = false):Void {
+        if (MenuDispatcher.Instance().visible) return;
         if (!onstead && (act || field == Inv.getIndex())) {
             ref = ref.substr(1);
             if (ref.substr(0, 3) == "act") {
@@ -139,8 +141,7 @@ class SteadDispatcher
 
     private static function getInv()
     {
-        var retVal:Array<Dynamic> = interpreter.call("instead.get_inv(" + Std.string(ThemeParser.horizontal_inventory)
-                + ")");
+        var retVal:Array<Dynamic> = interpreter.call("instead.get_inv(" + Std.string(ThemeParser.horizontal_inventory) + ")");
         if (retVal[0] != null)
         {
             var invAnswer:String = Std.string(retVal[0]);
