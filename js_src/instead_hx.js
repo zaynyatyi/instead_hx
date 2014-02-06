@@ -430,9 +430,11 @@ stead.SteadDispatcher = function() {
 	stead.MenuDispatcher.Instance().reset.onclick = function(e) {
 		stead.SteadDispatcher.interpreter.clear();
 		_g.InitGame();
+		stead.SteadDispatcher.look();
 		stead.MenuDispatcher.Instance().HideUp();
 	};
 	this.InitGame();
+	stead.SteadDispatcher.look();
 };
 stead.SteadDispatcher.__name__ = true;
 stead.SteadDispatcher.look = function() {
@@ -570,13 +572,14 @@ stead.SteadDispatcher.prototype = {
 		stead.SteadDispatcher._dofile_path = "./" + stead.ThemeParser.game_folder + "/";
 		stead.SteadDispatcher.interpreter.load(stead.SteadDispatcher._dofile_path + "main.lua");
 		stead.SteadDispatcher.interpreter.call("game.ini(game)");
-		stead.SteadDispatcher.look();
 	}
 	,OnSaveClick: function(e) {
 		stead.SteadDispatcher.ifaceCmd("\"save " + "backup_01" + "\"");
 		stead.MenuDispatcher.Instance().HideUp();
 	}
 	,OnLoadClick: function(e) {
+		stead.SteadDispatcher.interpreter.clear();
+		this.InitGame();
 		stead.SteadDispatcher.ifaceCmd("\"load " + "backup_01" + "\"");
 		stead.SteadDispatcher.refreshInterface();
 		stead.MenuDispatcher.Instance().HideUp();

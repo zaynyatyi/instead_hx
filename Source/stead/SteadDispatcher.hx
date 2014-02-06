@@ -49,9 +49,10 @@ class SteadDispatcher
         stead_div.onclick = OnSteadClick;
         MenuDispatcher.Instance().save.onclick = OnSaveClick;
         MenuDispatcher.Instance().load.onclick = OnLoadClick;
-        MenuDispatcher.Instance().reset.onclick = function (e:Event) { interpreter.clear(); InitGame(); MenuDispatcher.Instance().HideUp(); };
+        MenuDispatcher.Instance().reset.onclick = function (e:Event) { interpreter.clear(); InitGame(); look(); MenuDispatcher.Instance().HideUp(); };
         
         InitGame();
+        look();
     }
 
     private function InitGame() {
@@ -62,8 +63,6 @@ class SteadDispatcher
         _dofile_path = "./" + ThemeParser.game_folder + "/";
         interpreter.load(_dofile_path + "main.lua");
         interpreter.call("game.ini(game)");
-        
-        look();
     }
     
     private function OnSaveClick(e:Event):Void {
@@ -72,6 +71,8 @@ class SteadDispatcher
     }
     
     private function OnLoadClick(e:Event):Void {
+        interpreter.clear(); 
+        InitGame();
         ifaceCmd("\"load " + Main.SlotName + "\"");
         refreshInterface();
         MenuDispatcher.Instance().HideUp();
