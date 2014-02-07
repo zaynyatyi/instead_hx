@@ -1,12 +1,17 @@
+
+
 function Glue_init()
 {
+	Lua.requires = {}
 	Lua.inject(function (path) {
 		// path transformations
-		if (path.substr(-4) == ".lua") path = path.slice(0, -4); // require automatically appends .lua to the filepath later, remove it here
+		if (path.substr(-4) == ".lua") 
+			path = path.slice(0, -4); // require automatically appends .lua to the filepath later, remove it here
 		path = path.replace(/\./g, "/");
-
+		if (Lua.requires[path])
+			return;
+		Lua.requires[path] = true;
 		return RunLuaFromPath(path + ".lua"); // require("bla") -> bla.lua
-
 		//~ NOTE: replaces parser lib lua_require(G, path);
 	}, 'require');
 	Lua.inject(function (path) {
@@ -30,7 +35,7 @@ function RunLuaFromPath (path) {
 		// construct temporary function name containing filepath for more useful error messages
 		// var temp_function_name = "luatmp_"+path.replace(/[^a-zA-Z0-9]/g,"_");
 		luacode = Utf8.encode(luacode);
-        Lua.cache.items = {}; // Clear cache;
+		Lua.cache.items = {}; // Clear cache;
 		var res = Lua.exec(luacode, path);
 		return res;
 	} catch (e) {
