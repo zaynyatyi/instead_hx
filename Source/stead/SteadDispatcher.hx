@@ -97,6 +97,8 @@ class SteadDispatcher
         getPicture();
         getMusic();
         win.scrollTop = 0;
+        untyped __js__("$(\'#win\').perfectScrollbar(\'update\');");
+        untyped __js__("$(\'#inventory\').perfectScrollbar(\'update\');");
     }
 
     @:expose public static function click(ref:String, field:Int, onstead:Bool = false):Void {

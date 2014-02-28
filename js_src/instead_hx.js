@@ -448,6 +448,8 @@ stead.SteadDispatcher.refreshInterface = function() {
 	stead.SteadDispatcher.getPicture();
 	stead.SteadDispatcher.getMusic();
 	stead.SteadDispatcher.win.scrollTop = 0;
+	$('#win').perfectScrollbar('update');;
+	$('#inventory').perfectScrollbar('update');;
 };
 stead.SteadDispatcher.click = $hx_exports.stead.SteadDispatcher.click = function(ref,field,onstead) {
 	if(onstead == null) onstead = false;

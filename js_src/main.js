@@ -1,5 +1,10 @@
+$(function(){
+    $('#win').perfectScrollbar({wheelSpeed: 20});
+    $('#inventory').perfectScrollbar({wheelSpeed: 20});
+});
+
 // Custom glue functions for INSTEAD
-	
+
 // First of all, initialize the Lua module here.
 Lua.initialize();
 Glue_init();

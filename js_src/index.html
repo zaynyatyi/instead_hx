@@ -6,7 +6,10 @@
 <script type="text/javascript" src="with_love/glue.js"></script>
 <script type="text/javascript" src="with_love/utils.js"></script>
 <script type="text/javascript" src="with_love/lfs.filesystem.js"></script>
+<script type="text/javascript" src="jquery/jquery-2.1.0.min.js"></script>
+<script type="text/javascript" src="jquery/perfect-scrollbar-0.4.8.with-mousewheel.min.js"></script>
 <script type="text/javascript" src="main.js"></script>
+<link rel="stylesheet" href="style/perfect-scrollbar-0.4.8.min.css">
 <style type="text/css">
 * {
 	font-family: Tahoma,Verdana,Helvetica,Arial,sans-serif;
@@ -20,7 +23,7 @@
 
 pre {
 	white-space: pre-line;
-	padding-right: 10px;
+	padding-right: 20px;
 }
 
 .nowrap {
@@ -34,6 +37,7 @@ pre {
 #win, #inventory {
 	overflow: auto;
 	overflow-x: hidden;
+	overflow-y: hidden;
 }
 
 #title, #picture, #ways {
