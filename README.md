@@ -9,7 +9,7 @@ Installation
 To install instead_hx just put entry on folder js_src to your host.
 Modify index.html to adjust css of your game.
 
-Lua files of modules and gamesource folder should be placed in same folder as index.html
+Lua files of modules and gamesource folder should be placed in same folder as index.html.
 Game lua files should be placed in gamesource folder.
 
 That's it.
