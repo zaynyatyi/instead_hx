@@ -1,6 +1,6 @@
 (function ($hx_exports) { "use strict";
-$hx_exports.stead = {SteadDispatcher:{}};
-var $estr = function() { return js.Boot.__string_rec(this,''); };
+$hx_exports.stead = $hx_exports.stead || {};
+$hx_exports.stead.SteadDispatcher = $hx_exports.stead.SteadDispatcher || {};
 var EReg = function(r,opt) {
 	opt = opt.split("u").join("");
 	this.r = new RegExp(r,opt);
@@ -119,11 +119,6 @@ Std.__name__ = true;
 Std.string = function(s) {
 	return js.Boot.__string_rec(s,"");
 };
-var StringTools = function() { };
-StringTools.__name__ = true;
-StringTools.urlEncode = function(s) {
-	return encodeURIComponent(s);
-};
 var haxe = {};
 haxe.Http = function(url) {
 	this.url = url;
@@ -149,7 +144,7 @@ haxe.Http.prototype = {
 	request: function(post) {
 		var me = this;
 		me.responseData = null;
-		var r = js.Browser.createXMLHttpRequest();
+		var r = this.req = js.Browser.createXMLHttpRequest();
 		var onreadystatechange = function(_) {
 			if(r.readyState != 4) return;
 			var s;
@@ -160,14 +155,23 @@ haxe.Http.prototype = {
 			}
 			if(s == undefined) s = null;
 			if(s != null) me.onStatus(s);
-			if(s != null && s >= 200 && s < 400) me.onData(me.responseData = r.responseText); else if(s == null) me.onError("Failed to connect or resolve host"); else switch(s) {
+			if(s != null && s >= 200 && s < 400) {
+				me.req = null;
+				me.onData(me.responseData = r.responseText);
+			} else if(s == null) {
+				me.req = null;
+				me.onError("Failed to connect or resolve host");
+			} else switch(s) {
 			case 12029:
+				me.req = null;
 				me.onError("Failed to connect to host");
 				break;
 			case 12007:
+				me.req = null;
 				me.onError("Unknown host");
 				break;
 			default:
+				me.req = null;
 				me.responseData = r.responseText;
 				me.onError("Http Error #" + r.status);
 			}
@@ -179,7 +183,7 @@ haxe.Http.prototype = {
 			while( $it0.hasNext() ) {
 				var p = $it0.next();
 				if(uri == null) uri = ""; else uri += "&";
-				uri += StringTools.urlEncode(p.param) + "=" + StringTools.urlEncode(p.value);
+				uri += encodeURIComponent(p.param) + "=" + encodeURIComponent(p.value);
 			}
 		}
 		try {
@@ -188,8 +192,9 @@ haxe.Http.prototype = {
 				r.open("GET",this.url + (question?"?":"&") + uri,this.async);
 				uri = null;
 			} else r.open("GET",this.url,this.async);
-		} catch( e ) {
-			this.onError(e.toString());
+		} catch( e1 ) {
+			me.req = null;
+			this.onError(e1.toString());
 			return;
 		}
 		if(!Lambda.exists(this.headers,function(h) {
@@ -197,8 +202,8 @@ haxe.Http.prototype = {
 		}) && post && this.postData == null) r.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
 		var $it1 = this.headers.iterator();
 		while( $it1.hasNext() ) {
-			var h = $it1.next();
-			r.setRequestHeader(h.header,h.value);
+			var h1 = $it1.next();
+			r.setRequestHeader(h1.header,h1.value);
 		}
 		r.send(uri);
 		if(!this.async) onreadystatechange(null);
@@ -232,6 +237,9 @@ haxe.ds.StringMap.prototype = {
 var js = {};
 js.Boot = function() { };
 js.Boot.__name__ = true;
+js.Boot.getClass = function(o) {
+	if((o instanceof Array) && o.__enum__ == null) return Array; else return o.__class__;
+};
 js.Boot.__string_rec = function(o,s) {
 	if(o == null) return "null";
 	if(s.length >= 5) return "<...>";
@@ -253,16 +261,16 @@ js.Boot.__string_rec = function(o,s) {
 				return str + ")";
 			}
 			var l = o.length;
-			var i;
-			var str = "[";
+			var i1;
+			var str1 = "[";
 			s += "\t";
-			var _g = 0;
-			while(_g < l) {
-				var i1 = _g++;
-				str += (i1 > 0?",":"") + js.Boot.__string_rec(o[i1],s);
+			var _g2 = 0;
+			while(_g2 < l) {
+				var i2 = _g2++;
+				str1 += (i2 > 0?",":"") + js.Boot.__string_rec(o[i2],s);
 			}
-			str += "]";
-			return str;
+			str1 += "]";
+			return str1;
 		}
 		var tostr;
 		try {
@@ -275,7 +283,7 @@ js.Boot.__string_rec = function(o,s) {
 			if(s2 != "[object Object]") return s2;
 		}
 		var k = null;
-		var str = "{\n";
+		var str2 = "{\n";
 		s += "\t";
 		var hasp = o.hasOwnProperty != null;
 		for( var k in o ) {
@@ -285,12 +293,12 @@ js.Boot.__string_rec = function(o,s) {
 		if(k == "prototype" || k == "__class__" || k == "__super__" || k == "__interfaces__" || k == "__properties__") {
 			continue;
 		}
-		if(str.length != 2) str += ", \n";
-		str += s + k + " : " + js.Boot.__string_rec(o[k],s);
+		if(str2.length != 2) str2 += ", \n";
+		str2 += s + k + " : " + js.Boot.__string_rec(o[k],s);
 		}
 		s = s.substring(1);
-		str += "\n" + s + "}";
-		return str;
+		str2 += "\n" + s + "}";
+		return str2;
 	case "function":
 		return "<function>";
 	case "string":
@@ -325,16 +333,15 @@ js.Boot.__instanceof = function(o,cl) {
 		return typeof(o) == "boolean";
 	case String:
 		return typeof(o) == "string";
+	case Array:
+		return (o instanceof Array) && o.__enum__ == null;
 	case Dynamic:
 		return true;
 	default:
 		if(o != null) {
 			if(typeof(cl) == "function") {
-				if(o instanceof cl) {
-					if(cl == Array) return o.__enum__ == null;
-					return true;
-				}
-				if(js.Boot.__interfLoop(o.__class__,cl)) return true;
+				if(o instanceof cl) return true;
+				if(js.Boot.__interfLoop(js.Boot.getClass(o),cl)) return true;
 			}
 		} else return false;
 		if(cl == Class && o.__name__ != null) return true;
@@ -381,7 +388,7 @@ stead.MenuDispatcher = function() {
 		_g.self.style.visibility = "hidden";
 		_g.visible = false;
 	};
-	this.mute.onclick = function(e) {
+	this.mute.onclick = function(e1) {
 		js.Browser.getLocalStorage().setItem("mute",Std.string(!_g.muted));
 		_g.muted = !_g.muted;
 		stead.SteadDispatcher.track.muted = _g.muted;
@@ -405,16 +412,12 @@ stead.MenuDispatcher.prototype = {
 };
 stead.EField = { __ename__ : true, __constructs__ : ["Text","Ways","Title","Inv"] };
 stead.EField.Text = ["Text",0];
-stead.EField.Text.toString = $estr;
 stead.EField.Text.__enum__ = stead.EField;
 stead.EField.Ways = ["Ways",1];
-stead.EField.Ways.toString = $estr;
 stead.EField.Ways.__enum__ = stead.EField;
 stead.EField.Title = ["Title",2];
-stead.EField.Title.toString = $estr;
 stead.EField.Title.__enum__ = stead.EField;
 stead.EField.Inv = ["Inv",3];
-stead.EField.Inv.toString = $estr;
 stead.EField.Inv.__enum__ = stead.EField;
 stead.SteadDispatcher = function() {
 	var _g = this;
@@ -518,7 +521,6 @@ stead.SteadDispatcher.getMusic = function() {
 	}
 };
 stead.SteadDispatcher.showPicture = function(path) {
-	console.log(path);
 	var image = new Image();
 	image.style.left = "0px";
 	image.style.top = "0px";
@@ -534,9 +536,6 @@ stead.SteadDispatcher.copyAccross = function(e) {
 	stead.SteadDispatcher.canvas.getContext("2d").drawImage(image,0,0,image.width,image.height);
 };
 stead.SteadDispatcher.playMusic = function(path) {
-	console.log(path);
-	console.log(stead.SteadDispatcher.track.src);
-	console.log(stead.SteadDispatcher.track.src.indexOf(path));
 	if(stead.SteadDispatcher.track.src.indexOf(path) == -1) {
 		stead.SteadDispatcher.track.src = stead.SteadDispatcher._dofile_path + path;
 		var i = 1;
@@ -587,10 +586,7 @@ stead.SteadDispatcher.prototype = {
 		stead.MenuDispatcher.Instance().HideUp();
 	}
 	,OnSteadClick: function(e) {
-		if(!js.Boot.__instanceof(e.target,HTMLAnchorElement) && !js.Boot.__instanceof(e.target,HTMLSpanElement) && stead.SteadDispatcher.act) {
-			stead.SteadDispatcher.click("",0,true);
-			var i = 0;
-		}
+		if(!js.Boot.__instanceof(e.target,HTMLAnchorElement) && !js.Boot.__instanceof(e.target,HTMLSpanElement) && stead.SteadDispatcher.act) stead.SteadDispatcher.click("",0,true);
 	}
 	,__class__: stead.SteadDispatcher
 };
@@ -637,7 +633,6 @@ var $_, $fid = 0;
 function $bind(o,m) { if( m == null ) return null; if( m.__id__ == null ) m.__id__ = $fid++; var f; if( o.hx__closures__ == null ) o.hx__closures__ = {}; else f = o.hx__closures__[m.__id__]; if( f == null ) { f = function(){ return f.method.apply(f.scope, arguments); }; f.scope = o; f.method = m; o.hx__closures__[m.__id__] = f; } return f; }
 String.prototype.__class__ = String;
 String.__name__ = true;
-Array.prototype.__class__ = Array;
 Array.__name__ = true;
 var Int = { __name__ : ["Int"]};
 var Dynamic = { __name__ : ["Dynamic"]};
@@ -647,8 +642,6 @@ var Bool = Boolean;
 Bool.__ename__ = ["Bool"];
 var Class = { __name__ : ["Class"]};
 var Enum = { };
-var q = window.jQuery;
-js.JQuery = q;
 Main.SlotName = "backup_01";
 Main.DEFAULT_MENU_BTN = "gamesource/theme/menu.png";
 stead.SteadDispatcher._dofile_path = "";

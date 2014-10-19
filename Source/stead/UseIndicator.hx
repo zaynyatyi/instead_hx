@@ -1,6 +1,6 @@
 package stead;
-import js.html.Element;
 import js.Browser;
+import js.html.Element;
 
 /**
  * ...
@@ -11,21 +11,26 @@ class UseIndicator
 	private static var instance:UseIndicator;
 	private var cog:Element;
 	
-	private function new() {
+	private function new()
+	{
 		cog = Browser.document.getElementById('cog');
 	}
 	
-	public function PowerOn():Void {
+	public function PowerOn():Void
+	{
 		cog.style.visibility = "visible";
 	}
 	
-	public function PowerOff():Void {
+	public function PowerOff():Void
+	{
 		cog.style.visibility = "hidden";
 	}
 	
-	public static function Instance():UseIndicator {
-		if (instance == null)
+	public static function Instance():UseIndicator
+	{
+		if (instance == null) {
 			instance = new UseIndicator();
+		}
 		return instance;
 	}
 }
