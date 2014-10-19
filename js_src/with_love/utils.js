@@ -42,7 +42,7 @@ function NotImplemented (name) {
 		gNotImplementedAlreadyPrinted[name] = true;
 		MainPrint("NotImplemented:"+String(name)); 
 	}
-	return LuaNil; 
+	return LuaNil;
 }
 
 // ***** ***** ***** ***** ***** ajax

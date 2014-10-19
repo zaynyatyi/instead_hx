@@ -122,23 +122,23 @@ function Lfs_CreateTable () {
 	
 	if (localStorage)
 	{
-		t['write']					= function (path, data)
+		t['write'] = function (path, data)
 		{
 			localStorage[gFilesystemPrefix+path] = data;
-            return LuaNil;
+			return LuaNil;
 		}
-		t['setIdentity']                            = function (identity)
+		t['setIdentity'] = function (identity)
 		{
 			if (identity)
 				gFilesystemPrefix = identity + "-";
-            return LuaNil;
+			return LuaNil;
 		}
-		t['remove']                                 = function (path)
+		t['remove'] = function (path)
 		{
 			localStorage.removeItem(gFilesystemPrefix+path);
-            return LuaNil;
+			return LuaNil;
 		}
-		t['load']                                   = function (path)
+		t['load'] = function (path)
 		{
 			var file = localStorage[gFilesystemPrefix+path];
 			if (file)
@@ -156,5 +156,5 @@ function Lfs_CreateTable () {
 		}
 	}
 
-    Lua.inject(t, null, 'lfs_filesystem');
+	Lua.inject(t, null, 'lfs_filesystem');
 }

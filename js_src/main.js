@@ -1,6 +1,6 @@
 $(function(){
-    $('#win').perfectScrollbar({wheelSpeed: 20});
-    $('#inventory').perfectScrollbar({wheelSpeed: 20});
+	$('#win').perfectScrollbar({wheelSpeed: 20});
+	$('#inventory').perfectScrollbar({wheelSpeed: 20});
 });
 
 // Custom glue functions for INSTEAD
@@ -15,13 +15,13 @@ Glue_init();
 function Interpreter() {
 }
 Interpreter.prototype.call = function(command) {
-    return Lua.eval(command);
+	return Lua.eval(command);
 }
 Interpreter.prototype.load = function(path) {
-    RunLuaFromPath(path);
+	RunLuaFromPath(path);
 }
 Interpreter.prototype.clear = function() {
-    Lua.destroy();
-    Lua.initialize();
-    Glue_init();
+	Lua.destroy();
+	Lua.initialize();
+	Glue_init();
 }
